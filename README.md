@@ -32,27 +32,29 @@ The contact basin is currently receiving raw water. Operator login verified. Sta
 
 ## 💧 The Premise
 
-Welcome to **Diss N Fex**! You are a certified Water Treatment Plant Operator controlling a highly advanced, automated disinfection rig (manifested as an **Operator Cloud**). 
+Welcome to **Diss N Fex**! You are a certified Water Treatment Plant Operator controlling a highly advanced, automated chemical dosing and disinfection platform (the **Operator Rig**). 
 
 Your objective is simple: **prevent waterborne pathogens from sneaking through the contact basin and entering the clearwell**. 
 
 Instead of traditional arcade enemies, you are fighting microscopic impurities, bacteria, viruses, and cysts. Keep your chemical residual stable, manage filter turbidity, audit clearwell contact times, and defend the public from the dreaded **Superbug King**!
 
+*(Note: While the underlying game engine code retains legacy weather terms like "cloud", "rain", and "lightning" for template compatibility, the user interface and game design represent actual physical and chemical water treatment systems.)*
+
 ---
 
 ## 🎮 How to Operate the Rig
 
-Operate your SCADA cloud terminal using the following controls:
+Operate your SCADA dosing terminal using the following controls:
 
 | Input Control | Operation Protocol | Treatment Barrier Action |
 | :--- | :--- | :--- |
-| **`W` / `A` / `S` / `D`** (or **`Arrows`**) | **Rig Guidance** | Fly the cloud left, right, up, and down the basin. |
-| **`Spacebar`** (Hold) | **Chlorine Spray (Rain)** | Continuously sprays chlorine disinfectant. Essential for basic sanitization. |
-| **`E`** (or **`Left-Click`**) | **Ozone Diffuser (Hail)** | Fires heavy ozone hail balls. Excellent for target treatment. |
-| **`Q`** (or **`Right-Click`**) | **UV Reactor Pulse (Lightning)** | Discharges a massive ultraviolet pulse dealing high AoE damage. |
-| **`F`** | **Filter Vortex (Tornado)** | Triggers a backwash vortex that sweeps up and filters out large pathogen clusters. |
-| **`R`** | **Coagulant Injection (Frost)** | Shoots a freeze cone that traps pathogens, causing them to take **1.3x damage** and shatter. |
-| **`T`** | **pH Shock Zone (Fog)** | Deploys a fog corridor that slows pathogens by **60%** and multiplies all damage taken by **1.5x**. |
+| **`W` / `A` / `S` / `D`** (or **`Arrows`**) | **Rig Guidance** | Guide the Operator Rig left, right, up, and down the contact basin. |
+| **`Spacebar`** (Hold) | **Chlorine Contact Spray** | Continuously sprays chlorine disinfectant. Essential for basic sanitization. |
+| **`E`** (or **`Left-Click`**) | **Ozone Diffuser** | Discharges heavy ozone gas diffuser bullets. Excellent for target treatment. |
+| **`Q`** (or **`Right-Click`**) | **UV Disinfection Pulse** | Fires a high-voltage ultraviolet lamp pulse dealing high AoE DNA damage. |
+| **`F`** | **Filter Backwash Vortex** | Triggers a backwash vortex that sweeps up and filters out large pathogen clusters. |
+| **`R`** | **Coagulant Injection** | Injects freeze coagulant to clump pathogens, causing them to take **1.3x damage** and shatter. |
+| **`T`** | **pH Shock Zone** | Deploys a pH shock zone that slows pathogens by **60%** and multiplies all damage taken by **1.5x**. |
 
 ---
 
@@ -70,12 +72,12 @@ As water flow rates change, different pathogens will unlock. Keep an eye on your
 | **Coccus** | Business Woman | 1 | Standard sphere-shaped bacteria that travels in clusters. |
 | **Amoeba** | Tourist | 1 | A slow-moving protozoan that pauses frequently to sample conditions. |
 | **Flagellate** | Jogger | 1 | High-mobility organism that zips through the basin. |
-| **Endospore** | Raincoat Person | 1 | A dormant bacterial spore. Has **80% resistance** to basic Chlorine Spray! |
+| **Endospore** | Raincoat Person | 1 | A dormant bacterial spore. Has **80% resistance** to basic Chlorine Contact Spray! |
 | **Biofilm Germ** | Umbrella Person | 1 | Shielded by a protective slime layer that completely blocks chlorine from above. |
 | **Protozoan** | Old Lady | 1 | Very slow, ciliated eukaryotic cell. Extremely sensitive to UV pulses. |
 | **Budding Yeast** | Dog Walker | 1 | Multiplies by budding. The bud acts as a trailing cell connected by a plasma bridge. |
 | **Juggling Virus** | Street Performer | 1 | Stationary capsid. Juggles viral nodes to infect local areas. |
-| **Pathogen Cyst** | Construction Worker | 3 | Thick-walled protective cyst. High HP and resists **30%** of chlorine rain. |
+| **Pathogen Cyst** | Construction Worker | 3 | Thick-walled protective cyst. High HP and resists **30%** of chlorine spray. |
 | **Biofilm Gladiator** | Riot Police | 4 | Heavy armor plating. Rejects physical forces and shields nearby cells. |
 | **Mutator Cell** | Scientist | 1 | Constantly mutates. Highly unstable, coding DNA fragments in real-time. |
 | **Superbug King** (Boss) | Mayor / VIP | 500 | Elite boss. Spawns shield protein bodyguards and marches slowly to infect the effluent line. |
@@ -94,13 +96,13 @@ By collecting falling chemical power-ups and storing them in your inventory, you
 
 1. **`EMERGENCY OVERRIDE` (Ragnarök)**
    * **Formula**: Stack **2x Jar Test Lamps (Aurora)** + **1x Tracer Dye (Rainbow)**.
-   * **Result**: Summons Thor, descending to strike down 20 random pathogens with divine lightning bolts while shaking the entire screen.
+   * **Result**: Triggers a playful "Override" protocol that smites up to 20 random pathogens with high-voltage electrical surges while shaking the screen.
 2. **`FLASH COAGULATION` (Ice Age)**
    * **Formula**: Stack **3x Flash Coagulants (Blizzard)**.
    * **Result**: Instantly freezes all pathogens in the basin, rendering them helpless for a prolonged duration.
 3. **`PLANT UPSIZE` (Kaiju Mode)**
    * **Formula**: Stack **2x Oxidant Dose Boosts (Rage)** + **1x Operator Lift (Growth)**.
-   * **Result**: Grow your operator cloud to massive proportions for 20 seconds, magnifying the size and damage of all attacks.
+   * **Result**: Grows your Operator Rig to massive proportions for 20 seconds, magnifying the size and damage of all chemical dosers.
 4. **`LONG CONTACT HOLD` (Time Stop)**
    * **Formula**: Stack **3x Contact Basin Holds (SlowMo)**.
    * **Result**: Stretches the fabric of time itself, slowing all pathogens to a near-halt (8% speed) while you freely disinfect the pool.
@@ -109,19 +111,19 @@ By collecting falling chemical power-ups and storing them in your inventory, you
    * **Result**: Spawns an autonomous electrical orb that hunts pathogens across the basin, disabling enemy shields and zapping them for massive damage.
 6. **`CLEARWELL SURGE` (Great Flood)**
    * **Formula**: Stack **3x Chlorine Residual Boosts (Rain Boost)**.
-   * **Result**: Rises the basin water level, drowning all pathogens caught beneath the waterline.
+   * **Result**: Floods the basin with finished water to clear out all pathogens caught beneath the waterline.
 7. **`CONTACT CASCADE` (Chain Reaction)**
    * **Formula**: Stack **3x UV Lamp Drones (Ball Lightning)**.
    * **Result**: Instantly chains electrical current from pathogen to pathogen, creating a devastating molecular feedback loop.
 8. **`DOUBLE TRACER STUDY` (Double Rainbow)**
    * **Formula**: Stack **2x Tracer Dyes (Rainbow)**.
-   * **Result**: Lures all pathogens on-screen and spawns 20 extra pathogens immediately into the center of your disinfectant spray.
-9. **`BREAKPOINT CHLORINATION` (Toxic Storm)**
+   * **Result**: Lures all pathogens on-screen and spawns 20 extra pathogens immediately into the center of your chemical spray.
+9. **`BREAKPOINT CHLORINATION` (Breakpoint Wash)**
    * **Formula**: Stack **3x Breakpoint Chlorine (Acid Rain)**.
-   * **Result**: Floods the sky with a toxic green acid rain storm that completely ignores pathogen resistance and melts shielding.
+   * **Result**: Floods the basin with a breakpoint chlorination wash that completely ignores pathogen resistance and melts shielding.
 10. **`UV OVERDRIVE` (Tesla Overload)**
     * **Formula**: Stack **3x UV Lamp Banks (Chain Lightning)**.
-    * **Result**: Puts the UV generator into overdrive, automatically zapping random pathogens with high-voltage lightning strikes.
+    * **Result**: Puts the UV generator into overdrive, automatically zapping random pathogens with high-voltage electric discharges.
 
 </details>
 
@@ -132,14 +134,14 @@ By collecting falling chemical power-ups and storing them in your inventory, you
 This game runs entirely in the browser using raw, native web technologies—no heavy frameworks, bundlers, or servers required.
 
 * **Graphics**: HTML5 Canvas API with dynamic scaling.
-* **Physics/State**: Custom 2D collision detection and gravity systems.
+* **Physics/State**: Custom 2D collision detection and platform movement systems.
 * **Audio**: Multi-channel synth sound effects and retro background soundtracks.
 
 ### How to Run Locally
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/diss-n-fex.git
+   git clone https://github.com/boxwrench/Diss-N-Fex.git
    ```
 2. Navigate to the project directory:
    ```bash
@@ -164,5 +166,5 @@ Through his blog, [Title 22 (www.title22.org)](https://www.title22.org), Keith w
 ---
 
 <p align="center">
-  <sub><strong>Disclaimer:</strong> This simulator is for entertainment purposes only. The chemical dosing rates, UV charge times, and weather-based backwashes depicted in this game do not represent actual water engineering calculations or safe drinking water operating parameters. Do not attempt to run a municipal water plant using an Operator Cloud.</sub>
+  <sub><strong>Disclaimer:</strong> This simulator is for entertainment purposes only. The chemical dosing rates, UV charge times, and backwashes depicted in this game do not represent actual water engineering calculations or safe drinking water operating parameters. Do not attempt to run a municipal water plant using an Operator Rig.</sub>
 </p>
