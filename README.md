@@ -8,6 +8,12 @@
 </p>
 
 <p align="center">
+  <a href="https://boxwrench.github.io/Diss-N-Fex/">
+    <img src="https://img.shields.io/badge/PLAY%20GAME-LIVE%20ON%20GITHUB%20PAGES-blueviolet?style=for-the-badge&logo=githubpages&logoColor=white" alt="Play Live">
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Regulatory--Compliance-California%20Title%2022-brightgreen?style=for-the-badge&logo=googledrive&logoColor=white" alt="Title 22 Status">
   <img src="https://img.shields.io/badge/Disinfection--Barriers-6%20Active-blue?style=for-the-badge&logo=water&logoColor=white" alt="Disinfection Barriers">
   <img src="https://img.shields.io/badge/Operator--Rank-Grade%20V%20Superintendent-orange?style=for-the-badge&logo=opsgenie&logoColor=white" alt="Operator Rank">
