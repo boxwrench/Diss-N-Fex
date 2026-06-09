@@ -66,8 +66,8 @@ function AchievementSystem() {
 AchievementSystem.prototype._freshTracking = function () {
     return {
         attacksUsed:       {},
-        rainbowKills:      0,
-        teslaLightnings:   0,
+        tracerKills:      0,
+        uvOverdrivePulses:   0,
         auroraComplaints:  0,
         powerupsCollected: {},
         totalKills:        0
@@ -111,8 +111,8 @@ AchievementSystem.prototype.trackKill = function (pedTypeName, attackType, wasFr
     if (this._runTracking.totalKills >= 500) this.check('kill500');
 
     // Pedestrian-specific
-    if (pedTypeName === 'oldLady' && attackType === 'lightning') this.check('zapOldLady');
-    if (pedTypeName === 'child'   && attackType === 'rain')      this.check('soakChild');
+    if (pedTypeName === 'oldLady' && attackType === 'uv') this.check('zapOldLady');
+    if (pedTypeName === 'child'   && attackType === 'chlorine')      this.check('soakChild');
     if (pedTypeName === 'vip')                                    this.check('defeatVIP');
     if (pedTypeName === 'military')                               this.check('defeatMilitary');
 
@@ -151,7 +151,7 @@ AchievementSystem.prototype.trackIdle = function () {
     this.check('idle');
 };
 
-AchievementSystem.prototype.trackLightningKills = function (count) {
+AchievementSystem.prototype.trackUVKills = function (count) {
     if (count >= 5) this.check('lightningX5');
 };
 
@@ -159,14 +159,14 @@ AchievementSystem.prototype.trackTornadoHits = function (count) {
     if (count >= 10) this.check('tornadoSweep');
 };
 
-AchievementSystem.prototype.trackTeslaLightning = function () {
-    this._runTracking.teslaLightnings++;
-    if (this._runTracking.teslaLightnings >= 5) this.check('teslaSpam');
+AchievementSystem.prototype.trackUVOverdrivePulse = function () {
+    this._runTracking.uvOverdrivePulses++;
+    if (this._runTracking.uvOverdrivePulses >= 5) this.check('teslaSpam');
 };
 
-AchievementSystem.prototype.trackRainbowKill = function () {
-    this._runTracking.rainbowKills++;
-    if (this._runTracking.rainbowKills >= 5) this.check('rainbowTrap');
+AchievementSystem.prototype.trackTracerKill = function () {
+    this._runTracking.tracerKills++;
+    if (this._runTracking.tracerKills >= 5) this.check('rainbowTrap');
 };
 
 AchievementSystem.prototype.trackAuroraComplaint = function () {

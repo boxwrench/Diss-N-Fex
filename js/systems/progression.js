@@ -17,7 +17,7 @@ var UPGRADES = {
     hailDamage:      { name: 'Ozone Dose',        maxLevel: 5, cost: [8,22,45,80,120],  desc: '+1 ozone oxidation damage' },
     hailPierce:      { name: 'Diffuser Manifold', maxLevel: 3, cost: [20,50,90],        desc: 'Ozone bubbles hit +1 pathogen' },
     lightningAoe:    { name: 'UV Reactor Width',  maxLevel: 4, cost: [15,35,65,100],    desc: '+20% UV exposure radius' },
-    lightningCharge: { name: 'Lamp Warmup Tuning',maxLevel: 3, cost: [20,50,90],        desc: '-2s UV reactor recharge' },
+    uvCharge: { name: 'Lamp Warmup Tuning',maxLevel: 3, cost: [20,50,90],        desc: '-2s UV reactor recharge' },
     tornadoDuration: { name: 'Filter Backwash',   maxLevel: 3, cost: [15,40,75],        desc: '+1s filter vortex duration' },
     tornadoWidth:    { name: 'Sand Bed Suction',  maxLevel: 3, cost: [15,40,75],        desc: '+15px filter capture width' },
     frostDuration:   { name: 'Floc Contact Time', maxLevel: 3, cost: [15,40,75],        desc: '+1s coagulation clumping' },
@@ -32,7 +32,7 @@ class Progression {
     constructor() {
         this.unlockedAttacks = { rain: true, hail: false, lightning: false, tornado: false, frost: false, fog: false };
         this.upgradeLevels   = this._defaultUpgradeLevels();
-        this.stormPoints      = 0;
+        this.treatmentPoints      = 0;
         this.totalStormPoints = 0;
         this.highestWave      = 0;
         this.totalKills       = 0;
@@ -111,7 +111,7 @@ class Progression {
     canAfford(key) {
         var cost = this.getUpgradeCost(key);
         if (cost === null) return false;
-        return this.stormPoints >= cost;
+        return this.treatmentPoints >= cost;
     }
 
     /**
@@ -121,9 +121,9 @@ class Progression {
     buyUpgrade(key) {
         var cost = this.getUpgradeCost(key);
         if (cost === null) return false;
-        if (this.stormPoints < cost) return false;
+        if (this.treatmentPoints < cost) return false;
 
-        this.stormPoints -= cost;
+        this.treatmentPoints -= cost;
         this.upgradeLevels[key]++;
         return true;
     }
@@ -135,7 +135,7 @@ class Progression {
      */
     addStormPoints(score) {
         var earned = Math.floor(score / 1000);
-        this.stormPoints      += earned;
+        this.treatmentPoints      += earned;
         this.totalStormPoints += earned;
     }
 
@@ -151,28 +151,28 @@ class Progression {
 
         switch (stat) {
             case 'rainDPS':
-                return CFG.RAIN.DPS * (1 + 0.2 * lv.rainDamage);
+                return CFG.CHLORINE.DPS * (1 + 0.2 * lv.rainDamage);
 
             case 'rainConeWidth':
-                return CFG.RAIN.CONE_WIDTH * (1 + 0.25 * lv.rainWidth);
+                return CFG.CHLORINE.CONE_WIDTH * (1 + 0.25 * lv.rainWidth);
 
             case 'hailDamage':
-                return CFG.HAIL.DAMAGE + lv.hailDamage;
+                return CFG.OZONE.DAMAGE + lv.hailDamage;
 
             case 'hailPierce':
                 return 1 + lv.hailPierce;
 
             case 'lightningAoE':
-                return CFG.LIGHTNING.AOE_RADIUS * (1 + 0.2 * lv.lightningAoe);
+                return CFG.UV_PULSE.AOE_RADIUS * (1 + 0.2 * lv.lightningAoe);
 
             case 'lightningChargeTime':
-                return Math.max(5, CFG.LIGHTNING.CHARGE_TIME - 2 * lv.lightningCharge);
+                return Math.max(5, CFG.UV_PULSE.CHARGE_TIME - 2 * lv.uvCharge);
 
             case 'tornadoDuration':
-                return CFG.TORNADO.DURATION + lv.tornadoDuration;
+                return CFG.BACKWASH.DURATION + lv.tornadoDuration;
 
             case 'tornadoWidth':
-                return CFG.TORNADO.WIDTH + 15 * lv.tornadoWidth;
+                return CFG.BACKWASH.WIDTH + 15 * lv.tornadoWidth;
 
             case 'meterRechargeMultiplier':
                 return 1 + 0.25 * lv.meterRecharge;
@@ -181,19 +181,19 @@ class Progression {
                 return CFG.COMBO.WINDOW + 0.5 * lv.comboWindow;
 
             case 'cloudSpeed':
-                return CFG.CLOUD.SPEED * (1 + 0.15 * lv.moveSpeed);
+                return CFG.RIG.SPEED * (1 + 0.15 * lv.moveSpeed);
 
             case 'frostChargeTime':
-                return CFG.FROST.CHARGE_TIME;
+                return CFG.COAGULANT.CHARGE_TIME;
 
             case 'fogDuration':
-                return CFG.FOG.DURATION;
+                return CFG.PH_SHOCK.DURATION;
 
             case 'frostDuration':
-                return CFG.FROST.FREEZE_DURATION + lv.frostDuration;
+                return CFG.COAGULANT.FREEZE_DURATION + lv.frostDuration;
 
             case 'fogRadius':
-                return CFG.FOG.RADIUS + 50 * lv.fogRadius;
+                return CFG.PH_SHOCK.RADIUS + 50 * lv.fogRadius;
 
             default:
                 return 0;
@@ -226,7 +226,7 @@ class Progression {
             var data = {
                 unlockedAttacks: this.unlockedAttacks,
                 upgradeLevels:   this.upgradeLevels,
-                stormPoints:     this.stormPoints,
+                treatmentPoints:     this.treatmentPoints,
                 totalStormPoints: this.totalStormPoints,
                 highestWave:     this.highestWave,
                 totalKills:      this.totalKills,
@@ -274,8 +274,8 @@ class Progression {
             }
 
             // Numeric fields
-            if (typeof data.stormPoints === 'number' && data.stormPoints >= 0) {
-                this.stormPoints = data.stormPoints;
+            if (typeof data.treatmentPoints === 'number' && data.treatmentPoints >= 0) {
+                this.treatmentPoints = data.treatmentPoints;
             }
             if (typeof data.totalStormPoints === 'number' && data.totalStormPoints >= 0) {
                 this.totalStormPoints = data.totalStormPoints;
@@ -302,7 +302,7 @@ class Progression {
         // Reset to defaults
         this.unlockedAttacks      = { rain: true, hail: false, lightning: false, tornado: false, frost: false, fog: false };
         this.upgradeLevels        = this._defaultUpgradeLevels();
-        this.stormPoints          = 0;
+        this.treatmentPoints          = 0;
         this.totalStormPoints     = 0;
         this.highestWave          = 0;
         this.totalKills           = 0;

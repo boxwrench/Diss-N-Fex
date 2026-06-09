@@ -11,17 +11,17 @@ var OPERATOR_GEAR = [
 ];
 var CLOUD_COSMETICS = OPERATOR_GEAR;
 
-// ── Operator Rig (legacy Cloud class name retained for compatibility) ───────
+// ── Operator Rig (legacy OperatorRig class name retained for compatibility) ───────
 // Depends on globals: CFG, Input
 
-class Cloud {
+class OperatorRig {
     constructor() {
-        this.x = CFG.CLOUD.START_X;
-        this.y = CFG.CLOUD.START_Y;
+        this.x = CFG.RIG.START_X;
+        this.y = CFG.RIG.START_Y;
         this.vx = 0;
         this.vy = 0;
-        this.baseWidth = CFG.CLOUD.WIDTH;
-        this.baseHeight = CFG.CLOUD.HEIGHT;
+        this.baseWidth = CFG.RIG.WIDTH;
+        this.baseHeight = CFG.RIG.HEIGHT;
         this.width = this.baseWidth;
         this.height = this.baseHeight;
 
@@ -30,15 +30,15 @@ class Cloud {
         this.maxHp = 150;
 
         // Meters
-        this.rainMeter = CFG.RAIN.METER_MAX;
-        this.hailMeter = CFG.HAIL.METER_MAX;
-        this.lightningCharge = CFG.LIGHTNING.CHARGE_TIME;
-        this.tornadoCharge = CFG.TORNADO.CHARGE_TIME;
-        this.frostCharge = CFG.FROST.CHARGE_TIME;
-        this.fogCharge = CFG.FOG.CHARGE_TIME;
+        this.chlorineMeter = CFG.CHLORINE.METER_MAX;
+        this.ozoneMeter = CFG.OZONE.METER_MAX;
+        this.uvCharge = CFG.UV_PULSE.CHARGE_TIME;
+        this.backwashCharge = CFG.BACKWASH.CHARGE_TIME;
+        this.coagulantCharge = CFG.COAGULANT.CHARGE_TIME;
+        this.phCharge = CFG.PH_SHOCK.CHARGE_TIME;
 
         // State
-        this.isRaining = false;
+        this.isDosing = false;
         this.anger = 0;
         this.idleTimer = 0;
         this.isSleeping = false;
@@ -66,35 +66,35 @@ class Cloud {
         // ── Movement ────────────────────────────────────────────
         var move = Input.moveDir();
         var moving = (move.x !== 0 || move.y !== 0);
-        var attacking = Input.wantsRain() || Input.wantsHail() || Input.wantsLightning();
+        var attacking = Input.wantsChlorine() || Input.wantsOzone() || Input.wantsUV();
 
-        var speed = this._effectiveSpeed || CFG.CLOUD.SPEED;
+        var speed = this._effectiveSpeed || CFG.RIG.SPEED;
         this.vx = move.x * speed;
         this.vy = move.y * speed;
         this.x += this.vx * dt;
         this.y += this.vy * dt;
 
         // Clamp to bounds
-        this.x = Math.max(CFG.CLOUD.MIN_X, Math.min(CFG.CLOUD.MAX_X, this.x));
-        this.y = Math.max(CFG.CLOUD.MIN_Y, Math.min(CFG.CLOUD.MAX_Y, this.y));
+        this.x = Math.max(CFG.RIG.MIN_X, Math.min(CFG.RIG.MAX_X, this.x));
+        this.y = Math.max(CFG.RIG.MIN_Y, Math.min(CFG.RIG.MAX_Y, this.y));
 
         // ── Meter refill ────────────────────────────────────────
         var rechargeMult = this._effectiveRecharge || 1;
-        if (!this.isRaining) {
-            this.rainMeter = Math.min(CFG.RAIN.METER_MAX,
-                this.rainMeter + CFG.RAIN.REFILL_RATE * rechargeMult * dt);
+        if (!this.isDosing) {
+            this.chlorineMeter = Math.min(CFG.CHLORINE.METER_MAX,
+                this.chlorineMeter + CFG.CHLORINE.REFILL_RATE * rechargeMult * dt);
         }
-        this.hailMeter = Math.min(CFG.HAIL.METER_MAX,
-            this.hailMeter + CFG.HAIL.REFILL_RATE * rechargeMult * dt);
-        var ltngChargeMax = this._effectiveLightningCharge || CFG.LIGHTNING.CHARGE_TIME;
-        this.lightningCharge = Math.min(ltngChargeMax,
-            this.lightningCharge + dt * rechargeMult);
-        this.tornadoCharge = Math.min(CFG.TORNADO.CHARGE_TIME,
-            this.tornadoCharge + dt * rechargeMult);
-        this.frostCharge = Math.min(CFG.FROST.CHARGE_TIME,
-            this.frostCharge + dt * rechargeMult);
-        this.fogCharge = Math.min(CFG.FOG.CHARGE_TIME,
-            this.fogCharge + dt * rechargeMult);
+        this.ozoneMeter = Math.min(CFG.OZONE.METER_MAX,
+            this.ozoneMeter + CFG.OZONE.REFILL_RATE * rechargeMult * dt);
+        var ltngChargeMax = this._effectiveLightningCharge || CFG.UV_PULSE.CHARGE_TIME;
+        this.uvCharge = Math.min(ltngChargeMax,
+            this.uvCharge + dt * rechargeMult);
+        this.backwashCharge = Math.min(CFG.BACKWASH.CHARGE_TIME,
+            this.backwashCharge + dt * rechargeMult);
+        this.coagulantCharge = Math.min(CFG.COAGULANT.CHARGE_TIME,
+            this.coagulantCharge + dt * rechargeMult);
+        this.phCharge = Math.min(CFG.PH_SHOCK.CHARGE_TIME,
+            this.phCharge + dt * rechargeMult);
 
         // ── Idle / Sleep ────────────────────────────────────────
         if (!moving && !attacking) {
@@ -108,7 +108,7 @@ class Cloud {
         }
 
         // ── Anger decay ─────────────────────────────────────────
-        this.anger = Math.max(0, this.anger - CFG.CLOUD.ANGER_DECAY * dt);
+        this.anger = Math.max(0, this.anger - CFG.RIG.ANGER_DECAY * dt);
 
         // ── Expression timer ──────────────────────────────────
         if (this.expressionTimer > 0) {
@@ -616,7 +616,7 @@ class Cloud {
             }
 
             case 'crown': {
-                // Golden 3-point crown above cloud
+                // Golden 3-point crown above rig
                 var crownY = cy - h * 0.45;
                 var crownW = w * 0.25;
                 ctx.fillStyle = '#ffd700';
@@ -677,7 +677,7 @@ class Cloud {
             }
 
             case 'horns': {
-                // Two red pointed triangles from cloud top
+                // Two red pointed triangles from rig top
                 var hornY = cy - h * 0.35;
                 ctx.fillStyle = '#cc2222';
                 // Left horn
@@ -712,7 +712,7 @@ class Cloud {
             }
 
             case 'halo': {
-                // Golden ellipse floating above cloud
+                // Golden ellipse floating above rig
                 var haloY = cy - h * 0.52;
                 ctx.strokeStyle = '#ffd700';
                 ctx.lineWidth = 2.5;
@@ -729,7 +729,7 @@ class Cloud {
             }
 
             case 'tophat': {
-                // Dark top hat above cloud
+                // Dark top hat above rig
                 var hatY = cy - h * 0.42;
                 var hatW = w * 0.2;
                 var brimW = w * 0.3;
@@ -775,7 +775,7 @@ class Cloud {
     }
 
     _drawFace(ctx, cx, cy, w, h) {
-        var angerT = this.anger / CFG.CLOUD.ANGER_MAX; // 0..1
+        var angerT = this.anger / CFG.RIG.ANGER_MAX; // 0..1
         var expr = this.expression;
         var exprActive = this.expressionTimer > 0;
 
@@ -786,8 +786,8 @@ class Cloud {
         var eyeRy = 6;
 
         // Pupil shift based on velocity
-        var pShiftX = (this.vx / CFG.CLOUD.SPEED) * 2;
-        var pShiftY = (this.vy / CFG.CLOUD.SPEED) * 1.5;
+        var pShiftX = (this.vx / CFG.RIG.SPEED) * 2;
+        var pShiftY = (this.vy / CFG.RIG.SPEED) * 1.5;
 
         // Mouth baseline
         var mouthY = cy + h * 0.15;
@@ -1169,52 +1169,52 @@ class Cloud {
     // ── Meter Methods ───────────────────────────────────────────
 
     canRain() {
-        return this.rainMeter > 0;
+        return this.chlorineMeter > 0;
     }
 
     useRain(dt) {
-        this.rainMeter = Math.max(0, this.rainMeter - CFG.RAIN.DRAIN_RATE * dt);
-        this.isRaining = true;
+        this.chlorineMeter = Math.max(0, this.chlorineMeter - CFG.CHLORINE.DRAIN_RATE * dt);
+        this.isDosing = true;
     }
 
     stopRain() {
-        this.isRaining = false;
+        this.isDosing = false;
     }
 
     canHail() {
-        return this.hailMeter >= CFG.HAIL.COST;
+        return this.ozoneMeter >= CFG.OZONE.COST;
     }
 
     useHail() {
-        this.hailMeter = Math.max(0, this.hailMeter - CFG.HAIL.COST);
+        this.ozoneMeter = Math.max(0, this.ozoneMeter - CFG.OZONE.COST);
     }
 
     canLightning() {
-        var chargeNeeded = this._effectiveLightningCharge || CFG.LIGHTNING.CHARGE_TIME;
-        return this.lightningCharge >= chargeNeeded;
+        var chargeNeeded = this._effectiveLightningCharge || CFG.UV_PULSE.CHARGE_TIME;
+        return this.uvCharge >= chargeNeeded;
     }
 
     useLightning() {
-        this.lightningCharge = 0;
+        this.uvCharge = 0;
     }
 
     canTornado() {
-        return this.tornadoCharge >= CFG.TORNADO.CHARGE_TIME;
+        return this.backwashCharge >= CFG.BACKWASH.CHARGE_TIME;
     }
 
     useTornado() {
-        this.tornadoCharge = 0;
+        this.backwashCharge = 0;
     }
 
-    canFrost() { return this.frostCharge >= CFG.FROST.CHARGE_TIME; }
-    useFrost() { this.frostCharge = 0; }
-    canFog() { return this.fogCharge >= CFG.FOG.CHARGE_TIME; }
-    useFog() { this.fogCharge = 0; }
+    canFrost() { return this.coagulantCharge >= CFG.COAGULANT.CHARGE_TIME; }
+    useFrost() { this.coagulantCharge = 0; }
+    canFog() { return this.phCharge >= CFG.PH_SHOCK.CHARGE_TIME; }
+    useFog() { this.phCharge = 0; }
 
     // ── Anger ───────────────────────────────────────────────────
 
     addAnger(amount) {
-        this.anger = Math.min(CFG.CLOUD.ANGER_MAX, this.anger + amount);
+        this.anger = Math.min(CFG.RIG.ANGER_MAX, this.anger + amount);
     }
 
     setExpression(type, duration) {

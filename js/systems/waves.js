@@ -122,11 +122,11 @@ class WaveSystem {
 
     // -- Update ----------------------------------------------------------
 
-    update(dt, pedManager, cloud) {
+    update(dt, pedManager, rig) {
         if (this.state === 'playing') {
             return this._updatePlaying(dt, pedManager);
         } else if (this.state === 'intermission') {
-            this._updateIntermission(dt, pedManager, cloud);
+            this._updateIntermission(dt, pedManager, rig);
         }
         return null;
     }
@@ -148,7 +148,7 @@ class WaveSystem {
                     if (spawnedPed && this.activeMutator) {
                         var eff = this.activeMutator.effect;
                         if (eff === 'speedBoost') spawnedPed.speed *= 2;
-                        if (eff === 'allUmbrellas') spawnedPed.hasUmbrella = true;
+                        if (eff === 'allUmbrellas') spawnedPed.hasBiofilmShield = true;
                         if (eff === 'extraHP') { spawnedPed.hp += 2; spawnedPed.maxHp += 2; }
                         if (eff === 'extraMilitary' && Math.random() < 0.3 && PEOPLE_TYPES.military) {
                             pedManager.spawn('military', spawnX + (Math.random()-0.5)*100);
@@ -216,7 +216,7 @@ class WaveSystem {
         }
     }
 
-    _updateIntermission(dt, pedManager, cloud) {
+    _updateIntermission(dt, pedManager, rig) {
         // Timer counts down for display but does NOT auto-advance.
         // Player chooses: next wave or shop (handled by main.js).
         if (this.timer > 0) this.timer -= dt;
@@ -252,7 +252,7 @@ class WaveSystem {
             types.push('cyclist');
         }
         if (wave >= 5) {
-            types.push('raincoatPerson', 'umbrellaPerson');
+            types.push('endosporePerson', 'biofilmPerson');
         }
         if (wave >= 7) {
             types.push('oldLady', 'dogWalker', 'police');

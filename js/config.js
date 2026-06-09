@@ -8,7 +8,7 @@ const CFG = {
     SKY_BOTTOM: '#0e2b45',
 
     // Operator rig (player)
-    CLOUD: {
+    RIG: {
         SPEED: 280,
         WIDTH: 120,
         HEIGHT: 60,
@@ -23,7 +23,7 @@ const CFG = {
     },
 
     // Chlorine contact spray
-    RAIN: {
+    CHLORINE: {
         METER_MAX: 100,
         DRAIN_RATE: 25,
         REFILL_RATE: 15,
@@ -35,7 +35,7 @@ const CFG = {
     },
 
     // Ozone diffuser
-    HAIL: {
+    OZONE: {
         METER_MAX: 100,
         COST: 12,
         REFILL_RATE: 8,
@@ -47,7 +47,7 @@ const CFG = {
     },
 
     // UV reactor pulse
-    LIGHTNING: {
+    UV_PULSE: {
         CHARGE_TIME: 15,
         DAMAGE: 10,
         AOE_RADIUS: 80,
@@ -59,7 +59,7 @@ const CFG = {
     },
 
     // Filter backwash vortex
-    TORNADO: {
+    BACKWASH: {
         CHARGE_TIME: 10,
         DAMAGE: 4,
         SPEED: 180,
@@ -71,7 +71,7 @@ const CFG = {
     },
 
     // Coagulant injection
-    FROST: {
+    COAGULANT: {
         CHARGE_TIME: 8,
         CONE_WIDTH: 180,
         CONE_LENGTH: 200,
@@ -84,7 +84,7 @@ const CFG = {
     },
 
     // pH shock zone
-    FOG: {
+    PH_SHOCK: {
         CHARGE_TIME: 12,
         RADIUS: 350,
         DURATION: 6,

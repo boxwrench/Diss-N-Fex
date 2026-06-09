@@ -78,7 +78,7 @@ class ScoringSystem {
      * @param {number} points  base kill points (already scaled by attack type)
      * @param {number} x
      * @param {number} y
-     * @param {string} type    attack type key ('rain','hail','lightning')
+     * @param {string} type    attack type key ('chlorine','ozone','uv')
      * @param {Array}  [textPopups]
      * @returns {number} actual points
      */
@@ -89,7 +89,7 @@ class ScoringSystem {
         var actual = this.addHit(points, x, y, textPopups);
 
         // Chain-lightning bonus: three or more kills in quick succession
-        if (type === 'lightning' && this.combo >= 3) {
+        if (type === 'uv' && this.combo >= 3) {
             var bonus = 50 * this.combo;
             this.score     += bonus;
             this.waveScore += bonus;

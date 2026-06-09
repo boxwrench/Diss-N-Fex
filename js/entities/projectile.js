@@ -5,7 +5,7 @@
 class ProjectileManager {
     constructor() {
         this.raindrops      = [];
-        this.hailstones     = [];
+        this.ozoneProjectiles     = [];
         this.lightningBolts = [];
         this.tornadoes      = [];
         this.frostCones     = [];
@@ -18,16 +18,16 @@ class ProjectileManager {
 
     /**
      * Spawn a raindrop falling straight down.
-     * @param {number} x  cloud centre x
-     * @param {number} y  cloud bottom y
+     * @param {number} x  rig centre x
+     * @param {number} y  rig bottom y
      * @param {number} coneWidth  horizontal spread
      */
     spawnRain(x, y, coneWidth) {
-        var half = (coneWidth || CFG.RAIN.CONE_WIDTH) / 2;
+        var half = (coneWidth || CFG.CHLORINE.CONE_WIDTH) / 2;
         this.raindrops.push({
             x:  x + (Math.random() - 0.5) * half * 2,
             y:  y,
-            vy: CFG.RAIN.DROP_SPEED,
+            vy: CFG.CHLORINE.DROP_SPEED,
             w:  2,
             h:  8,
         });
@@ -40,13 +40,13 @@ class ProjectileManager {
         var dx   = targetX - x;
         var dy   = targetY - y;
         var dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        var spd  = CFG.HAIL.SPEED;
-        this.hailstones.push({
+        var spd  = CFG.OZONE.SPEED;
+        this.ozoneProjectiles.push({
             x:  x,
             y:  y,
             vx: (dx / dist) * spd,
             vy: (dy / dist) * spd,
-            r:  CFG.HAIL.RADIUS,
+            r:  CFG.OZONE.RADIUS,
         });
     }
 
@@ -56,8 +56,8 @@ class ProjectileManager {
      */
     spawnLightning(x, y) {
         var bolt = this._generateBolt(x, y, CFG.GROUND_Y);
-        bolt.life     = CFG.LIGHTNING.BOLT_DURATION;
-        bolt.maxLife  = CFG.LIGHTNING.BOLT_DURATION;
+        bolt.life     = CFG.UV_PULSE.BOLT_DURATION;
+        bolt.maxLife  = CFG.UV_PULSE.BOLT_DURATION;
         bolt.x        = x;                       // centre x for AoE
         bolt.groundY  = CFG.GROUND_Y;
         this.lightningBolts.push(bolt);
@@ -75,11 +75,11 @@ class ProjectileManager {
             x: x,
             y: CFG.GROUND_Y,
             dir: dir,
-            speed: CFG.TORNADO.SPEED,
-            life: CFG.TORNADO.DURATION,
-            maxLife: CFG.TORNADO.DURATION,
-            width: CFG.TORNADO.WIDTH,
-            height: CFG.TORNADO.HEIGHT,
+            speed: CFG.BACKWASH.SPEED,
+            life: CFG.BACKWASH.DURATION,
+            maxLife: CFG.BACKWASH.DURATION,
+            width: CFG.BACKWASH.WIDTH,
+            height: CFG.BACKWASH.HEIGHT,
             hitTimer: 0, // ticks for damage intervals
             rotation: 0,
             hitPeds: {}, // track last hit time per ped to avoid constant damage
@@ -95,8 +95,8 @@ class ProjectileManager {
         var cone = {
             x: x, y: y, dir: dir,
             life: 1.2, maxLife: 1.2,
-            width: CFG.FROST.CONE_WIDTH,
-            length: CFG.FROST.CONE_LENGTH,
+            width: CFG.COAGULANT.CONE_WIDTH,
+            length: CFG.COAGULANT.CONE_LENGTH,
         };
         this.frostCones.push(cone);
         return cone;
@@ -108,8 +108,8 @@ class ProjectileManager {
     spawnFog(x, groundY) {
         var zone = {
             x: x, y: groundY,
-            radius: CFG.FOG.RADIUS,
-            life: CFG.FOG.DURATION, maxLife: CFG.FOG.DURATION,
+            radius: CFG.PH_SHOCK.RADIUS,
+            life: CFG.PH_SHOCK.DURATION, maxLife: CFG.PH_SHOCK.DURATION,
         };
         this.fogZones.push(zone);
         return zone;
@@ -202,13 +202,13 @@ class ProjectileManager {
         }
 
         // Hail
-        for (i = this.hailstones.length - 1; i >= 0; i--) {
-            var h = this.hailstones[i];
-            h.vy += CFG.HAIL.GRAVITY * dt;
+        for (i = this.ozoneProjectiles.length - 1; i >= 0; i--) {
+            var h = this.ozoneProjectiles[i];
+            h.vy += CFG.OZONE.GRAVITY * dt;
             h.x  += h.vx * dt;
             h.y  += h.vy * dt;
             if (h.y > CFG.GROUND_Y + 20 || h.y < -50) {
-                this.hailstones.splice(i, 1);
+                this.ozoneProjectiles.splice(i, 1);
             }
         }
 
@@ -264,7 +264,7 @@ class ProjectileManager {
 
         // Screen flash decay
         if (this.flashAlpha > 0) {
-            this.flashAlpha -= dt / CFG.LIGHTNING.FLASH_DURATION;
+            this.flashAlpha -= dt / CFG.UV_PULSE.FLASH_DURATION;
             if (this.flashAlpha < 0) this.flashAlpha = 0;
         }
     }
@@ -295,8 +295,8 @@ class ProjectileManager {
     }
 
     _drawHail(ctx) {
-        for (var i = 0; i < this.hailstones.length; i++) {
-            var h = this.hailstones[i];
+        for (var i = 0; i < this.ozoneProjectiles.length; i++) {
+            var h = this.ozoneProjectiles[i];
             ctx.fillStyle   = 'rgba(0, 230, 255, 0.25)'; // cyan ozone bubbles
             ctx.strokeStyle = '#00ffff';
             ctx.lineWidth   = 1.5;
@@ -420,7 +420,7 @@ class ProjectileManager {
             ctx.translate(c.x, c.y);
             ctx.globalAlpha = alpha * 0.7;
 
-            // Cone triangle pointing downward from cloud position
+            // Cone triangle pointing downward from rig position
             var halfW = c.width / 2;
             var len = c.length;
 

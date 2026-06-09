@@ -96,7 +96,7 @@ class Pedestrian {
         this.walkTimer = 0;
         this.stateTimer = 0;
         this.fleeDir = 0;
-        this.hasUmbrella = typeName === 'umbrellaPerson';
+        this.hasBiofilmShield = typeName === 'biofilmPerson';
         this.deathTimer = 0;
         this.alive = true;
         this.alpha = 1;
@@ -113,22 +113,22 @@ class Pedestrian {
         }
 
         // Scientist shield blocks rain damage
-        if (this._shielded && type === 'rain') {
+        if (this._shielded && type === 'chlorine') {
             return { hit: false, killed: false, points: 0 };
         }
 
         // Rain resistance (acid rain bypasses all)
-        if (type === 'rain' && !this._acidRain) {
-            if (this.hasUmbrella) {
+        if (type === 'chlorine' && !this._acidRain) {
+            if (this.hasBiofilmShield) {
                 return { hit: false, killed: false, points: 0 };
             }
-            if (this.type.rainResist) {
-                amount *= (1 - this.type.rainResist);
+            if (this.type.chlorineResist) {
+                amount *= (1 - this.type.chlorineResist);
             }
         }
 
         // Construction worker hard hat resists hail
-        if (type === 'hail' && this.type.highHailResist) {
+        if (type === 'ozone' && this.type.highHailResist) {
             amount *= 0.4; // 60% hail damage reduction
         }
 
@@ -138,11 +138,11 @@ class Pedestrian {
 
         // Fog: peds take 1.5x damage
         if (this._inFog) {
-            amount *= CFG.FOG.DAMAGE_MULT;
+            amount *= CFG.PH_SHOCK.DAMAGE_MULT;
         }
         // Frozen peds take bonus damage
         if (this._frozen) {
-            amount *= CFG.FROST.DAMAGE_MULT;
+            amount *= CFG.COAGULANT.DAMAGE_MULT;
         }
         this.hp -= amount;
         this.flashTimer = 0.1;
@@ -162,7 +162,7 @@ class Pedestrian {
         if (this.hp <= 0) {
             this.hp = 0;
             this.alive = false;
-            if (type === 'lightning') {
+            if (type === 'uv') {
                 this.state = 'zapped';
                 this.stateTimer = 0;
                 this.skeletonFlash = 0.6;
@@ -243,8 +243,8 @@ class Pedestrian {
         if (this._frozenTimer > 0) {
             this._frozenTimer -= dt;
             // Cold damage only if frozen by frost (not mesmerized by aurora)
-            if (this.alive && CFG.FROST.FREEZE_DPS && !this._mesmerized) {
-                this.hp -= CFG.FROST.FREEZE_DPS * dt;
+            if (this.alive && CFG.COAGULANT.FREEZE_DPS && !this._mesmerized) {
+                this.hp -= CFG.COAGULANT.FREEZE_DPS * dt;
                 if (this.hp <= 0) {
                     this.hp = 0;
                     this.alive = false;
@@ -279,7 +279,7 @@ class Pedestrian {
             case 'walk':
                 var moveSpeed = this.speed;
                 if (this._blizzardSlow) moveSpeed *= Math.pow(0.3, this._blizzardSlow);
-                if (this._inFog) moveSpeed *= CFG.FOG.SLOW;
+                if (this._inFog) moveSpeed *= CFG.PH_SHOCK.SLOW;
                 if (this._inFlood) moveSpeed *= 0.5;
 
                 // Tourist: occasionally stops for photos
@@ -326,7 +326,7 @@ class Pedestrian {
             case 'flee':
                 var fleeSpd = CFG.PED.FLEE_SPEED;
                 if (this._blizzardSlow) fleeSpd *= Math.pow(0.3, this._blizzardSlow);
-                if (this._inFog) fleeSpd *= CFG.FOG.SLOW;
+                if (this._inFog) fleeSpd *= CFG.PH_SHOCK.SLOW;
                 if (this._inFlood) fleeSpd *= 0.5;
                 this.x += this.fleeDir * fleeSpd * dt;
 

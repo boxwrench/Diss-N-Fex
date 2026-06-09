@@ -11,7 +11,7 @@ var PEOPLE_TYPES = {
         points: 100,
         speed: 1.0,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 1,
         spawnWeight: 10,
         draw: function (ctx, ped) {
@@ -45,7 +45,7 @@ var PEOPLE_TYPES = {
         points: 100,
         speed: 1.0,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 1,
         spawnWeight: 10,
         draw: function (ctx, ped) {
@@ -73,7 +73,7 @@ var PEOPLE_TYPES = {
         points: 150,
         speed: 0.6,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 1,
         spawnWeight: 8,
         stopsForPhotos: true,
@@ -109,7 +109,7 @@ var PEOPLE_TYPES = {
         points: 75,
         speed: 1.8,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 1,
         spawnWeight: 7,
         draw: function (ctx, ped) {
@@ -132,12 +132,12 @@ var PEOPLE_TYPES = {
     },
 
     // ── 5. Endospore (Raincoat Person) ───────────────────────────────────────
-    raincoatPerson: {
+    endosporePerson: {
         name: 'Endospore',
         points: 25,
         speed: 1.0,
         hp: 1,
-        rainResist: 0.8,
+        chlorineResist: 0.8,
         unlockWave: 2,
         spawnWeight: 6,
         draw: function (ctx, ped) {
@@ -158,14 +158,14 @@ var PEOPLE_TYPES = {
     },
 
     // ── 6. Biofilm-Shielded (Umbrella Person) ───────────────────────────────────────
-    umbrellaPerson: {
+    biofilmPerson: {
         name: 'Biofilm Germ',
         points: 30,
         speed: 1.0,
         hp: 1,
-        rainResist: 0,
-        umbrellaRainBlock: 1.0,
-        hasUmbrella: true,
+        chlorineResist: 0,
+        umbrellaChlorineBlock: 1.0,
+        hasBiofilmShield: true,
         unlockWave: 2,
         spawnWeight: 6,
         draw: function (ctx, ped) {
@@ -178,7 +178,7 @@ var PEOPLE_TYPES = {
             ctx.fill();
             ctx.stroke();
             // Biofilm shield dome
-            if (ped.hasUmbrella !== false) {
+            if (ped.hasBiofilmShield !== false) {
                 ctx.strokeStyle = 'rgba(0, 170, 255, 0.85)';
                 ctx.fillStyle = 'rgba(0, 170, 255, 0.15)';
                 ctx.lineWidth = 2;
@@ -202,7 +202,7 @@ var PEOPLE_TYPES = {
         points: 200,
         speed: 0.4,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 3,
         spawnWeight: 4,
         guiltPopup: true,
@@ -241,7 +241,7 @@ var PEOPLE_TYPES = {
         points: 120,
         speed: 0.8,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 3,
         spawnWeight: 5,
         hasDog: true,
@@ -278,7 +278,7 @@ var PEOPLE_TYPES = {
         points: 175,
         speed: 0,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 4,
         spawnWeight: 3,
         stationary: true,
@@ -332,7 +332,7 @@ var PEOPLE_TYPES = {
         points: 80,
         speed: 0.3,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 4,
         spawnWeight: 4,
         wideHitbox: true,
@@ -363,10 +363,10 @@ var PEOPLE_TYPES = {
         points: 10,
         speed: 1.2,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 1,
         spawnWeight: 6,
-        enjoysRain: true,
+        enjoysChlorine: true,
         heightScale: 0.6,
         draw: function (ctx, ped) {
             ctx.fillStyle = '#ff7f50';
@@ -391,7 +391,7 @@ var PEOPLE_TYPES = {
         points: 500,
         speed: 0.7,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 5,
         spawnWeight: 1,
         spawnsBodyguards: true,
@@ -428,7 +428,7 @@ var PEOPLE_TYPES = {
         points: 50,
         speed: 1.0,
         hp: 5,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 5,
         spawnWeight: 0,
         protectsVIP: true,
@@ -447,13 +447,13 @@ var PEOPLE_TYPES = {
         },
     },
 
-    // ── 14. Spore Colony (Weather Reporter) ─────────────────────────────────────
+    // ── 14. Spore Colony (BasinEffects Reporter) ─────────────────────────────────────
     weatherReporter: {
         name: 'Spore Colony',
         points: 300,
         speed: 0,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 8,
         spawnWeight: 2,
         stationary: true,
@@ -490,7 +490,7 @@ var PEOPLE_TYPES = {
         points: 60,
         speed: 0.8,
         hp: 3,
-        rainResist: 0.3,
+        chlorineResist: 0.3,
         unlockWave: 3,
         spawnWeight: 6,
         draw: function (ctx, ped) {
@@ -516,7 +516,7 @@ var PEOPLE_TYPES = {
         points: 80,
         speed: 0.9,
         hp: 4,
-        rainResist: 0.2,
+        chlorineResist: 0.2,
         unlockWave: 6,
         spawnWeight: 4,
         draw: function (ctx, ped) {
@@ -543,7 +543,7 @@ var PEOPLE_TYPES = {
         points: 150,
         speed: 1.0,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 5,
         spawnWeight: 5,
         draw: function (ctx, ped) {
@@ -570,7 +570,7 @@ var PEOPLE_TYPES = {
         points: 40,
         speed: 1.1,
         hp: 2,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 3,
         spawnWeight: 7,
         draw: function (ctx, ped) {
@@ -600,7 +600,7 @@ var PEOPLE_TYPES = {
         points: 60,
         speed: 0.9,
         hp: 3,
-        rainResist: 0.1,
+        chlorineResist: 0.1,
         unlockWave: 7,
         spawnWeight: 5,
         draw: function (ctx, ped) {
@@ -625,7 +625,7 @@ var PEOPLE_TYPES = {
         points: 110,
         speed: 1.5,
         hp: 1,
-        rainResist: 0,
+        chlorineResist: 0,
         unlockWave: 3,
         spawnWeight: 5,
         draw: function (ctx, ped) {
@@ -648,7 +648,7 @@ var PEOPLE_TYPES = {
         points: 2000,
         speed: 0.8,
         hp: 50,
-        rainResist: 0.5,
+        chlorineResist: 0.5,
         unlockWave: 0,
         spawnWeight: 0,
         draw: function (ctx, ped) {
@@ -691,7 +691,7 @@ var PEOPLE_TYPES = {
         points: 1500,
         speed: 0.6,
         hp: 40,
-        rainResist: 0.4,
+        chlorineResist: 0.4,
         unlockWave: 0,
         spawnWeight: 0,
         draw: function (ctx, ped) {
@@ -721,7 +721,7 @@ var PEOPLE_TYPES = {
         points: 3000,
         speed: 0.9,
         hp: 60,
-        rainResist: 0.3,
+        chlorineResist: 0.3,
         unlockWave: 0,
         spawnWeight: 0,
         draw: function (ctx, ped) {
@@ -752,13 +752,13 @@ var PEOPLE_TYPES = {
         },
     },
 
-    // ── 24. Anti-Sanitizer Colony (Boss Anti-Cloud) ──────────────────────────
+    // ── 24. Anti-Sanitizer Colony (Boss Anti-OperatorRig) ──────────────────────────
     bossAntiCloud: {
         name: 'Anti-Sanitizer Colony',
         points: 2500,
         speed: 0.7,
         hp: 50,
-        rainResist: 0.6,
+        chlorineResist: 0.6,
         unlockWave: 0,
         spawnWeight: 0,
         draw: function (ctx, ped) {

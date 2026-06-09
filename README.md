@@ -38,7 +38,7 @@ Your objective is simple: **prevent waterborne pathogens from sneaking through t
 
 Instead of traditional arcade enemies, you are fighting microscopic impurities, bacteria, viruses, and cysts. Keep your chemical residual stable, manage filter turbidity, audit clearwell contact times, and defend the public from the dreaded **Superbug King**!
 
-*(Note: While the underlying game engine code retains legacy weather terms like "cloud", "rain", and "lightning" for template compatibility, the user interface and game design represent actual physical and chemical water treatment systems.)*
+*(Note: While the underlying game engine code retains legacy basinEffects terms like "rig", "chlorine", and "uv" for template compatibility, the user interface and game design represent actual physical and chemical water treatment systems.)*
 
 ---
 

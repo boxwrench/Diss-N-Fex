@@ -112,8 +112,8 @@ var HUD = {
     // ── Resource Meters (top-left) ─────────────────────────────────
 
     _drawResourceBars: function (ctx, game) {
-        var cloud = game.cloud;
-        if (!cloud) return;
+        var rig = game.rig;
+        if (!rig) return;
         var prog = game.progression;
 
         var barX = 70;
@@ -125,8 +125,8 @@ var HUD = {
         var keyX = barX + barW + 6;
 
         // Operator HP bar (wider, at the top)
-        if (cloud.hp != null) {
-            var hpFill = cloud.hp / cloud.maxHp;
+        if (rig.hp != null) {
+            var hpFill = rig.hp / rig.maxHp;
             var hpColor = hpFill > 0.5 ? '#44cc44' : hpFill > 0.25 ? '#cccc00' : '#cc3333';
             this.drawBar(ctx, barX, barY, barW, barH + 2, hpFill, hpColor, '#1a1a2e', 'HP');
             // HP text
@@ -134,7 +134,7 @@ var HUD = {
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
             ctx.fillStyle = '#aaaaaa';
-            ctx.fillText(Math.ceil(cloud.hp) + '/' + cloud.maxHp, keyX, barY + (barH + 2) / 2);
+            ctx.fillText(Math.ceil(rig.hp) + '/' + rig.maxHp, keyX, barY + (barH + 2) / 2);
             row++;
         }
 
@@ -147,7 +147,7 @@ var HUD = {
         };
 
         // Rain (always shown)
-        var rainFill = (cloud.rainMeter || 0) / CFG.RAIN.METER_MAX;
+        var rainFill = (rig.chlorineMeter || 0) / CFG.CHLORINE.METER_MAX;
         this.drawBar(ctx, barX, barY + gap * row, barW, barH, rainFill, '#ccff33', '#1a1a2e', 'CHLORINE');
         _drawKey(barY + gap * row, 'SPACE');
         row++;
@@ -178,29 +178,29 @@ var HUD = {
         };
 
         // Hail
-        var hailUnlocked = !prog || prog.hasAttack('hail');
-        _drawChargeBar(this, 'OZONE', 'E', (cloud.hailMeter || 0) / CFG.HAIL.METER_MAX,
+        var hailUnlocked = !prog || prog.hasAttack('ozone');
+        _drawChargeBar(this, 'OZONE', 'E', (rig.ozoneMeter || 0) / CFG.OZONE.METER_MAX,
             '#00ffff', 'rgba(0,255,255,A)', hailUnlocked, 3);
 
         // Lightning
-        var ltngUnlocked = !prog || prog.hasAttack('lightning');
-        var ltngCharge = cloud._effectiveLightningCharge || CFG.LIGHTNING.CHARGE_TIME;
-        _drawChargeBar(this, 'UV LIGHT', 'Q', (cloud.lightningCharge || 0) / ltngCharge,
+        var ltngUnlocked = !prog || prog.hasAttack('uv');
+        var ltngCharge = rig._effectiveLightningCharge || CFG.UV_PULSE.CHARGE_TIME;
+        _drawChargeBar(this, 'UV LIGHT', 'Q', (rig.uvCharge || 0) / ltngCharge,
             '#dd66ff', 'rgba(220,100,255,A)', ltngUnlocked, 6);
 
         // Frost
-        var frstUnlocked = !prog || prog.hasAttack('frost');
-        _drawChargeBar(this, 'COAG', 'R', (cloud.frostCharge || 0) / CFG.FROST.CHARGE_TIME,
+        var frstUnlocked = !prog || prog.hasAttack('coagulant');
+        _drawChargeBar(this, 'COAG', 'R', (rig.coagulantCharge || 0) / CFG.COAGULANT.CHARGE_TIME,
             '#ffffff', 'rgba(255,255,255,A)', frstUnlocked, 8);
 
         // Tornado
-        var tornUnlocked = !prog || prog.hasAttack('tornado');
-        _drawChargeBar(this, 'VORTX', 'F', (cloud.tornadoCharge || 0) / CFG.TORNADO.CHARGE_TIME,
+        var tornUnlocked = !prog || prog.hasAttack('backwash');
+        _drawChargeBar(this, 'VORTX', 'F', (rig.backwashCharge || 0) / CFG.BACKWASH.CHARGE_TIME,
             '#00aaff', 'rgba(0,170,255,A)', tornUnlocked, 10);
 
         // Fog
-        var fogUnlocked = !prog || prog.hasAttack('fog');
-        _drawChargeBar(this, 'pH SHOCK', 'T', (cloud.fogCharge || 0) / CFG.FOG.CHARGE_TIME,
+        var fogUnlocked = !prog || prog.hasAttack('ph');
+        _drawChargeBar(this, 'pH SHOCK', 'T', (rig.phCharge || 0) / CFG.PH_SHOCK.CHARGE_TIME,
             '#88cc44', 'rgba(136,204,68,A)', fogUnlocked, 12);
 
         // Treatment points indicator
@@ -208,7 +208,7 @@ var HUD = {
             ctx.font = '10px "Courier New", monospace';
             ctx.textAlign = 'left';
             ctx.fillStyle = '#ffcc00';
-            ctx.fillText('TP: ' + prog.stormPoints, barX, barY + gap * row + 4);
+            ctx.fillText('TP: ' + prog.treatmentPoints, barX, barY + gap * row + 4);
         }
     },
 
@@ -461,7 +461,7 @@ var HUD = {
         // Sanitization points earned this wave
         var prog = game.progression;
         if (prog) {
-            this._shadowText(ctx, 'Treatment Points: ' + prog.stormPoints + ' TP', cx, statY + statGap * 2, '#ffcc00',
+            this._shadowText(ctx, 'Treatment Points: ' + prog.treatmentPoints + ' TP', cx, statY + statGap * 2, '#ffcc00',
                 '14px "Courier New", monospace', 'center');
         }
 

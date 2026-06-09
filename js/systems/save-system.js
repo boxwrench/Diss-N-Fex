@@ -37,8 +37,8 @@ const SaveSystem = (function () {
                     score: game.scoring.score,
                     totalKills: game.scoring.totalKills,
                     bestCombo: game.scoring.bestCombo,
-                    cloudHp: game.cloud.hp,
-                    stormPoints: game.progression.stormPoints,
+                    cloudHp: game.rig.hp,
+                    treatmentPoints: game.progression.treatmentPoints,
                     upgradeLevels: game.progression.upgradeLevels,
                     timestamp: Date.now(),
                 }));
@@ -57,11 +57,11 @@ const SaveSystem = (function () {
                 game.scoring.score = data.score || 0;
                 game.scoring.totalKills = data.totalKills || 0;
                 game.scoring.bestCombo = data.bestCombo || 0;
-                game.cloud.hp = data.cloudHp || game.cloud.maxHp;
+                game.rig.hp = data.cloudHp || game.rig.maxHp;
 
                 // Restore per-slot SP and upgrades
-                if (typeof data.stormPoints === 'number') {
-                    game.progression.stormPoints = data.stormPoints;
+                if (typeof data.treatmentPoints === 'number') {
+                    game.progression.treatmentPoints = data.treatmentPoints;
                 }
                 if (data.upgradeLevels) {
                     game.progression.upgradeLevels = data.upgradeLevels;

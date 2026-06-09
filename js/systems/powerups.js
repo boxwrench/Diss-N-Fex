@@ -3,14 +3,14 @@
 // Depends on global CFG.
 
 var POWERUP_TYPES = [
-    { name: 'Chlorine Residual', color: '#0066ff', effect: 'rainBoost',      duration: 10, minWave: 1,
+    { name: 'Chlorine Residual', color: '#0066ff', effect: 'chlorineBoost',      duration: 10, minWave: 1,
       drawIcon: function(ctx, r) { // 3 rain drops
         ctx.strokeStyle = '#88bbff'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.moveTo(-3,-r*0.5); ctx.lineTo(-3,r*0.3); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(3,-r*0.3);  ctx.lineTo(3,r*0.5);  ctx.stroke();
         ctx.beginPath(); ctx.moveTo(-1,-r*0.1); ctx.lineTo(-1,r*0.6); ctx.stroke();
       }},
-    { name: 'Ozone Diffuser',    color: '#4488aa', effect: 'hailAuto',       duration: 10, minWave: 3,
+    { name: 'Ozone Diffuser',    color: '#4488aa', effect: 'ozoneAuto',       duration: 10, minWave: 3,
       drawIcon: function(ctx, r) { // 3 ice chunks (squares)
         ctx.fillStyle = '#cceeFF'; ctx.fillRect(-r*0.4,-r*0.4,r*0.35,r*0.35);
         ctx.fillRect(r*0.05,-r*0.1,r*0.35,r*0.35);
@@ -55,7 +55,7 @@ var POWERUP_TYPES = [
           ctx.beginPath(); ctx.arc(0, r*0.2, r*(0.5-i*0.05), Math.PI, 0); ctx.stroke();
         }
       }},
-    { name: 'Breakpoint Chlorine',    color: '#aacc00', effect: 'acidRain',       duration: 10, minWave: 4,
+    { name: 'Breakpoint Chlorine',    color: '#aacc00', effect: 'breakpointChlorine',       duration: 10, minWave: 4,
       drawIcon: function(ctx, r) { // skull-ish toxic drop
         ctx.fillStyle = '#ddff00';
         ctx.beginPath(); ctx.moveTo(0,-r*0.5); ctx.bezierCurveTo(-r*0.4,0,-r*0.3,r*0.4,0,r*0.5);
@@ -126,7 +126,7 @@ class PowerUpSystem {
 
     // -- Collect ---------------------------------------------------------
 
-    collect(powerup, cloud, textPopups) {
+    collect(powerup, rig, textPopups) {
         // Text popup
         if (textPopups && textPopups.add) {
             textPopups.add(powerup.x, powerup.y, powerup.type.name + '!', {
@@ -149,22 +149,22 @@ class PowerUpSystem {
 
         // If inventory is full, activate immediately
         if (!stored) {
-            this._activate(powerup.type, powerup.x, cloud);
+            this._activate(powerup.type, powerup.x, rig);
         }
     }
 
     /** Activate a power-up from inventory slot (0-2). Returns true if used. */
-    activateSlot(slot, cloud) {
+    activateSlot(slot, rig) {
         if (slot < 0 || slot >= this.inventory.length) return false;
         var item = this.inventory[slot];
         if (!item) return false;
         this.inventory[slot] = null;
-        this._activate(item.type, item.collectX, cloud);
+        this._activate(item.type, item.collectX, rig);
         return true;
     }
 
     /** Internal: actually activate a power-up effect. */
-    _activate(type, collectX, cloud) {
+    _activate(type, collectX, rig) {
         // Timed effect
         this.activeEffects.push({
             name:      type.name,
@@ -174,27 +174,27 @@ class PowerUpSystem {
         });
 
         // Check for secret combos
-        this._checkSecretCombos(cloud);
+        this._checkSecretCombos(rig);
 
-        // Rainbow: set anchor at activation position (use cloud X for manual activation)
+        // Rainbow: set anchor at activation position (use rig X for manual activation)
         if (type.effect === 'rainbow') {
-            var rx = (cloud && cloud.x) ? cloud.x : collectX;
+            var rx = (rig && rig.x) ? rig.x : collectX;
             this.rainbow = { x: rx, remaining: type.duration, spawned: false };
         }
 
         // Heal: restore 40 HP instantly
-        if (type.effect === 'heal' && cloud) {
-            cloud.hp = Math.min(cloud.maxHp, cloud.hp + 40);
+        if (type.effect === 'heal' && rig) {
+            rig.hp = Math.min(rig.maxHp, rig.hp + 40);
         }
 
-        // Ball Lightning: start flying from cloud to nearest building
+        // Ball Lightning: start flying from rig to nearest building
         // Multiple stacks = more buildings hit (tracked via _ballLightningStacks)
-        if (type.effect === 'ballLightning' && cloud) {
+        if (type.effect === 'ballLightning' && rig) {
             this._ballLightningStacks = (this._ballLightningStacks || 0) + 1;
             if (!this.ballLightning) {
                 this.ballLightning = {
-                    x: cloud.x,
-                    y: cloud.y + 30,
+                    x: rig.x,
+                    y: rig.y + 30,
                     targetX: 0,
                     targetY: CFG.GROUND_Y,
                     phase: 'flying',
@@ -213,13 +213,13 @@ class PowerUpSystem {
         }
     }
 
-    _applyInstant(type, cloud) {
+    _applyInstant(type, rig) {
         // No instant-only effects currently
     }
 
     // -- Update ----------------------------------------------------------
 
-    update(dt, cloud) {
+    update(dt, rig) {
         this._time += dt;
 
         // Move falling powerups
@@ -251,7 +251,7 @@ class PowerUpSystem {
             eff.remaining -= dt;
 
             // Apply ongoing effects each frame
-            this._applyOngoing(eff, dt, cloud);
+            this._applyOngoing(eff, dt, rig);
 
             if (eff.remaining <= 0) {
                 this.activeEffects.splice(j, 1);
@@ -335,35 +335,35 @@ class PowerUpSystem {
         }
     }
 
-    _applyOngoing(eff, dt, cloud) {
-        if (!cloud) return;
+    _applyOngoing(eff, dt, rig) {
+        if (!rig) return;
 
         switch (eff.effect) {
-            case 'rainBoost':
+            case 'chlorineBoost':
                 // Unlimited rain — keep meter full while active
-                if (cloud.rainMeter != null) {
-                    cloud.rainMeter = CFG.RAIN.METER_MAX;
+                if (rig.chlorineMeter != null) {
+                    rig.chlorineMeter = CFG.CHLORINE.METER_MAX;
                 }
                 break;
 
             case 'chainLightning':
                 // Unlimited lightning — instant recharge after each strike
-                var chargeMax = cloud._effectiveLightningCharge || CFG.LIGHTNING.CHARGE_TIME;
-                cloud.lightningCharge = chargeMax;
+                var chargeMax = rig._effectiveLightningCharge || CFG.UV_PULSE.CHARGE_TIME;
+                rig.uvCharge = chargeMax;
                 break;
 
             case 'growth':
                 // Keep growth timer topped up while effect is active
-                cloud.growthTimer = Math.max(cloud.growthTimer, 0.5);
+                rig.growthTimer = Math.max(rig.growthTimer, 0.5);
                 // Count active growth stacks
                 var growthCount = 0;
                 for (var gi = 0; gi < this.activeEffects.length; gi++) {
                     if (this.activeEffects[gi].effect === 'growth') growthCount++;
                 }
-                cloud._growthStacks = growthCount;
+                rig._growthStacks = growthCount;
                 break;
 
-            case 'acidRain':
+            case 'breakpointChlorine':
                 // Rain ignores resistance and melts umbrellas (handled by main.js checking hasEffect)
                 break;
 
@@ -564,7 +564,7 @@ class PowerUpSystem {
 
     // -- Secret Combos ---------------------------------------------------
 
-    _checkSecretCombos(cloud) {
+    _checkSecretCombos(rig) {
         // Don't trigger if a combo is already active
         if (this.secretCombo) return;
         var c = this.countEffect.bind(this);
@@ -576,7 +576,7 @@ class PowerUpSystem {
                 type: 'ragnarok',
                 timer: 6.0,
                 phase: 'descend', // descend → smite → ascend
-                thorX: cloud ? cloud.x : CFG.WIDTH / 2,
+                thorX: rig ? rig.x : CFG.WIDTH / 2,
                 thorY: -100,
                 smiteTimer: 0,
                 smiteCount: 0,
@@ -594,9 +594,9 @@ class PowerUpSystem {
 
         // KAIJU MODE: Rage x2 + Growth
         if (c('rage') >= 2 && c('growth') >= 1) {
-            if (cloud) {
-                cloud._growthStacks = 4; // big but not absurd (1.4^4 = ~3.8x size)
-                cloud.growthTimer = 20;
+            if (rig) {
+                rig._growthStacks = 4; // big but not absurd (1.4^4 = ~3.8x size)
+                rig.growthTimer = 20;
             }
             this.secretCombo = {
                 name: 'PLANT UPSIZE',
@@ -615,7 +615,7 @@ class PowerUpSystem {
             };
         }
 
-        // SUPER BALL LIGHTNING: Ball Lightning x2 + Tesla Coil
+        // SUPER BALL UV_PULSE: Ball Lightning x2 + Tesla Coil
         if (c('ballLightning') >= 2 && c('chainLightning') >= 1) {
             this.secretCombo = {
                 name: 'MOBILE UV LAMP',
@@ -625,10 +625,10 @@ class PowerUpSystem {
         }
 
         // GREAT FLOOD: Storm Surge x3
-        if (c('rainBoost') >= 3) {
+        if (c('chlorineBoost') >= 3) {
             this.secretCombo = {
                 name: 'CLEARWELL SURGE',
-                type: 'flood',
+                type: 'surge',
                 timer: 12.0,
                 waterLevel: CFG.GROUND_Y,
             };
@@ -656,7 +656,7 @@ class PowerUpSystem {
         }
 
         // TOXIC STORM: Acid Rain x3
-        if (c('acidRain') >= 3) {
+        if (c('breakpointChlorine') >= 3) {
             this.secretCombo = {
                 name: 'BREAKPOINT CHLORINATION',
                 type: 'toxicStorm',

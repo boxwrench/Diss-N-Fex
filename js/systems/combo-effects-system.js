@@ -35,7 +35,7 @@ const ComboEffectsSystem = (function () {
                 } catch (e) {}
 
                 if (typeof SFX !== 'undefined') {
-                    SFX.playLightningStrike();
+                    SFX.playUVPulse();
                 }
 
                 // Check achievements
@@ -43,7 +43,7 @@ const ComboEffectsSystem = (function () {
                     ragnarok: 'comboRagnarok',
                     iceage: 'comboIceAge',
                     kaiju: 'comboKaiju',
-                    flood: 'comboFlood',
+                    surge: 'comboFlood',
                     emp: 'comboEmp',
                     chainReaction: 'comboChain',
                     doubleRainbow: 'comboDblRainbow',
@@ -71,19 +71,19 @@ const ComboEffectsSystem = (function () {
                     var alive = game.pedManager.getAlive();
                     if (alive.length > 0) {
                         var victim = alive[Math.floor(Math.random() * alive.length)];
-                        victim.takeDamage(999, 'lightning');
+                        victim.takeDamage(999, 'uv');
                         game.particles.lightningParticles(victim.x, victim.y - 12);
                         game.camera.shake(5, 0.2);
                         
                         if (typeof SFX !== 'undefined') {
-                            SFX.playLightningStrike();
+                            SFX.playUVPulse();
                         }
                         
                         game.scoring.addKill(
                             Math.floor((victim.type ? victim.type.points : 100) * 5),
                             victim.x,
                             victim.y,
-                            'lightning',
+                            'uv',
                             game.textPopups
                         );
 
@@ -122,7 +122,7 @@ const ComboEffectsSystem = (function () {
             // EMP Ball Lightning: chase nearest germ and zap
             if (combo.type === 'emp') {
                 if (!combo._orbX) {
-                    combo._orbX = game.cloud.x;
+                    combo._orbX = game.rig.x;
                     combo._orbY = CFG.GROUND_Y - 30;
                     combo._zapTimer = 0;
                 }
@@ -143,7 +143,7 @@ const ComboEffectsSystem = (function () {
                 combo._zapTimer += dt;
                 if (combo._zapTimer >= 0.3 && empTarget && empDist < 80) {
                     combo._zapTimer = 0;
-                    empTarget.takeDamage(8, 'lightning');
+                    empTarget.takeDamage(8, 'uv');
                     game.particles.lightningParticles(empTarget.x, empTarget.y - 12);
                     if (!empTarget.alive) {
                         game.particles.deathPoof(empTarget.x, empTarget.y - 12);
@@ -151,7 +151,7 @@ const ComboEffectsSystem = (function () {
                             Math.floor((empTarget.type ? empTarget.type.points : 100) * 3),
                             empTarget.x,
                             empTarget.y,
-                            'lightning',
+                            'uv',
                             game.textPopups
                         );
                     }
@@ -165,7 +165,7 @@ const ComboEffectsSystem = (function () {
             }
 
             // Flooding: Water level rises and drowns pathogens below line
-            if (combo.type === 'flood') {
+            if (combo.type === 'surge') {
                 combo.waterLevel -= 15 * dt;
                 var waterY = Math.max(combo.waterLevel, CFG.GROUND_Y - 180);
                 var floodPeds = game.pedManager.getAlive();
@@ -177,14 +177,14 @@ const ComboEffectsSystem = (function () {
                         fp._drownTimer += dt;
                         if (fp._drownTimer >= 0.5) {
                             fp._drownTimer = 0;
-                            var dr = fp.takeDamage(3, 'rain');
+                            var dr = fp.takeDamage(3, 'chlorine');
                             if (dr.killed) {
                                 game.particles.deathPoof(fp.x, fp.y - 12);
                                 game.scoring.addKill(
                                     Math.floor((fp.type ? fp.type.points : 50) * 2),
                                     fp.x,
                                     fp.y,
-                                    'rain',
+                                    'chlorine',
                                     game.textPopups
                                 );
                                 if (Math.random() < 0.2) {
@@ -208,14 +208,14 @@ const ComboEffectsSystem = (function () {
                         if (!combo._zapped[ci]) {
                             combo._zapped[ci] = true;
                             var cp = crPeds[ci];
-                            cp.takeDamage(999, 'lightning');
+                            cp.takeDamage(999, 'uv');
                             game.particles.lightningParticles(cp.x, cp.y - 12);
                             if (!cp.alive) {
                                 game.scoring.addKill(
                                     Math.floor((cp.type ? cp.type.points : 50) * 3),
                                     cp.x,
                                     cp.y,
-                                    'lightning',
+                                    'uv',
                                     game.textPopups
                                 );
                             }
@@ -234,13 +234,13 @@ const ComboEffectsSystem = (function () {
                 combo._spawned = true;
                 var allPedsDR = game.pedManager.getAlive();
                 for (var dri = 0; dri < allPedsDR.length; dri++) {
-                    allPedsDR[dri].attract(game.cloud.x);
+                    allPedsDR[dri].attract(game.rig.x);
                 }
                 var drTypes = game.waves.getAvailableTypes(game.waves.waveNumber);
                 for (var drs = 0; drs < 20; drs++) {
                     var drSide = Math.random() < 0.5 ? -30 : CFG.CITY.WORLD_WIDTH + 30;
                     var drPed = game.pedManager.spawn(drTypes[Math.floor(Math.random() * drTypes.length)], drSide);
-                    drPed.attract(game.cloud.x + (Math.random() - 0.5) * 200);
+                    drPed.attract(game.rig.x + (Math.random() - 0.5) * 200);
                 }
             }
 
@@ -252,8 +252,8 @@ const ComboEffectsSystem = (function () {
                     var tlPeds = game.pedManager.getAlive();
                     if (tlPeds.length > 0) {
                         var tlTarget = tlPeds[Math.floor(Math.random() * tlPeds.length)];
-                        game.projectiles.spawnLightning(tlTarget.x, game.cloud.y + game.cloud.height * 0.5);
-                        tlTarget.takeDamage(CFG.LIGHTNING.DAMAGE, 'lightning');
+                        game.projectiles.spawnLightning(tlTarget.x, game.rig.y + game.rig.height * 0.5);
+                        tlTarget.takeDamage(CFG.UV_PULSE.DAMAGE, 'uv');
                         game.particles.lightningParticles(tlTarget.x, tlTarget.y - 12);
                         if (!tlTarget.alive) {
                             game.particles.deathPoof(tlTarget.x, tlTarget.y - 12);
@@ -261,7 +261,7 @@ const ComboEffectsSystem = (function () {
                                 Math.floor((tlTarget.type ? tlTarget.type.points : 50) * 5),
                                 tlTarget.x,
                                 tlTarget.y,
-                                'lightning',
+                                'uv',
                                 game.textPopups
                             );
                         }
@@ -276,15 +276,15 @@ const ComboEffectsSystem = (function () {
             if (!combo) return;
 
             var camera = game.camera;
-            var cloud = game.cloud;
+            var rig = game.rig;
 
             // ── Ragnarök drawing: Thor holding Mjölnir ──────────────────
             if (combo.type === 'ragnarok') {
                 var scale = 1.0;
                 var S = scale;
 
-                var tx = cloud.x - camera.x + camera.offsetX;
-                var ty = cloud.y + cloud.height + 40;
+                var tx = rig.x - camera.x + camera.offsetX;
+                var ty = rig.y + rig.height + 40;
 
                 ctx.save();
                 
@@ -511,8 +511,8 @@ const ComboEffectsSystem = (function () {
 
             // ── Kaiju Mode: screen shake + storm overlay ────────────────
             if (combo.type === 'kaiju') {
-                cloud._growthStacks = 4;
-                cloud.growthTimer = 2;
+                rig._growthStacks = 4;
+                rig.growthTimer = 2;
                 if (Math.random() < 0.08) {
                     camera.shake(4, 0.15);
                 }
@@ -580,7 +580,7 @@ const ComboEffectsSystem = (function () {
             }
 
             // ── Flood: Water body rising + surface waves ───────────────
-            if (combo.type === 'flood') {
+            if (combo.type === 'surge') {
                 var waterY = Math.max(combo.waterLevel, CFG.GROUND_Y - 180);
                 var waterH = CFG.GROUND_Y + 20 - waterY;
                 if (waterH > 0) {

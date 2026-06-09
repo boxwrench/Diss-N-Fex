@@ -55,12 +55,12 @@ const Input = {
         return { x: dx, y: dy };
     },
 
-    wantsRain()      { return this.isDown('Space'); },
-    wantsHail()      { return this.justPressed('KeyE') || this.mouse.down; },
-    wantsLightning() { return this.justPressed('KeyQ') || this.mouse.right; },
-    wantsTornado()   { return this.justPressed('KeyF'); },
-    wantsFrost()     { return this.justPressed('KeyR'); },
-    wantsFog()       { return this.justPressed('KeyT'); },
+    wantsChlorine()      { return this.isDown('Space'); },
+    wantsOzone()      { return this.justPressed('KeyE') || this.mouse.down; },
+    wantsUV() { return this.justPressed('KeyQ') || this.mouse.right; },
+    wantsBackwash()   { return this.justPressed('KeyF'); },
+    wantsCoagulant()     { return this.justPressed('KeyR'); },
+    wantsPH()       { return this.justPressed('KeyT'); },
 
     endFrame() {
         this._justPressed = {};

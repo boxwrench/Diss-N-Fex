@@ -165,7 +165,7 @@ class MenuSystem {
                     var _leftK = [], _rightK = [];
                     for (var _ski = 0; _ski < shopKeys.length; _ski++) {
                         var _sk = shopKeys[_ski];
-                        if (_sk.indexOf('lightning') === 0 || _sk.indexOf('tornado') === 0 || _sk.indexOf('frost') === 0 || _sk.indexOf('fog') === 0) {
+                        if (_sk.indexOf('uv') === 0 || _sk.indexOf('backwash') === 0 || _sk.indexOf('coagulant') === 0 || _sk.indexOf('ph') === 0) {
                             _rightK.push(_sk);
                         } else {
                             _leftK.push(_sk);
@@ -303,7 +303,7 @@ class MenuSystem {
         }
     }
 
-    // ── Animated cloud for title screen ────────────────────────────
+    // ── Animated rig for title screen ────────────────────────────
 
     _drawTitle22Badge(ctx, x, y, scale) {
         scale = scale || 1;
@@ -383,8 +383,8 @@ class MenuSystem {
         var w = 120;
         var h = 60;
 
-        if (typeof Cloud !== 'undefined') {
-            if (!this._operatorPreview) this._operatorPreview = new Cloud();
+        if (typeof OperatorRig !== 'undefined') {
+            if (!this._operatorPreview) this._operatorPreview = new OperatorRig();
             this._operatorPreview._time = this._time;
             this._operatorPreview.expression = 'happy';
             this._operatorPreview.expressionTimer = 1;
@@ -724,7 +724,7 @@ class MenuSystem {
                 '10px "Courier New", monospace', 'center', '#888888');
         }
 
-        // ── Weather Forecast box (bottom-right) ──────────────────
+        // ── BasinEffects Forecast box (bottom-right) ──────────────────
         var forecastW = 170;
         var forecastH = 60;
         var forecastX = paperX + paperW - forecastW - 20;
@@ -738,7 +738,7 @@ class MenuSystem {
         // Box header
         ctx.fillStyle = '#1a1a1a';
         ctx.fillRect(forecastX, forecastY, forecastW, 16);
-        inkText('WEATHER FORECAST', forecastX + forecastW / 2, forecastY + 1,
+        inkText('BASIN_EFFECTS FORECAST', forecastX + forecastW / 2, forecastY + 1,
             'bold 10px "Courier New", monospace', 'center', '#f5f0e1');
 
         // Forecast text
@@ -920,7 +920,7 @@ class MenuSystem {
         ctx.restore();
 
         // Sanitization points
-        var pts = progression ? progression.stormPoints : 0;
+        var pts = progression ? progression.treatmentPoints : 0;
         this._shadowText(ctx, 'Treatment Points: ' + pts, cx, 58, '#ffcc00',
             'bold 20px "Courier New", monospace', 'center');
 
@@ -931,7 +931,7 @@ class MenuSystem {
             hailDamage:      '#aaddee',
             hailPierce:      '#aaddee',
             lightningAoe:    '#ddcc00',
-            lightningCharge: '#ddcc00',
+            uvCharge: '#ddcc00',
             tornadoDuration: '#aa8855',
             tornadoWidth:    '#aa8855',
             frostDuration:   '#88ccff',
@@ -949,7 +949,7 @@ class MenuSystem {
 
         for (var ki = 0; ki < allKeys.length; ki++) {
             var k = allKeys[ki];
-            if (k.indexOf('lightning') === 0 || k.indexOf('tornado') === 0 || k.indexOf('frost') === 0 || k.indexOf('fog') === 0) {
+            if (k.indexOf('uv') === 0 || k.indexOf('backwash') === 0 || k.indexOf('coagulant') === 0 || k.indexOf('ph') === 0) {
                 rightKeys.push(k);
             } else {
                 leftKeys.push(k);
@@ -1093,12 +1093,12 @@ class MenuSystem {
             'bold 14px "Courier New", monospace', 'center');
 
         var attacks = [
-            { name: 'Chlorine',  key: 'rain',      icon: '\u2602', color: '#4488dd' },
-            { name: 'Ozone',     key: 'hail',      icon: '\u2744', color: '#aaddee' },
-            { name: 'UV',        key: 'lightning',  icon: '\u26A1', color: '#ddcc00' },
-            { name: 'Filter',    key: 'tornado',    icon: '\u2301', color: '#aa8855' },
-            { name: 'Coagulant', key: 'frost',      icon: '\u2745', color: '#88ccff' },
-            { name: 'pH',        key: 'fog',        icon: '\u2601', color: '#888899' },
+            { name: 'Chlorine',  key: 'chlorine',      icon: '\u2602', color: '#4488dd' },
+            { name: 'Ozone',     key: 'ozone',      icon: '\u2744', color: '#aaddee' },
+            { name: 'UV',        key: 'uv',  icon: '\u26A1', color: '#ddcc00' },
+            { name: 'Filter',    key: 'backwash',    icon: '\u2301', color: '#aa8855' },
+            { name: 'Coagulant', key: 'coagulant',      icon: '\u2745', color: '#88ccff' },
+            { name: 'pH',        key: 'ph',        icon: '\u2601', color: '#888899' },
         ];
 
         var atkSpacing = 90;
@@ -1272,7 +1272,7 @@ MenuSystem.SUB_HEADLINES = [
     "Lab results confirmed: completely germ-free",
 ];
 
-// ── Weather forecast quips (game over screen) ─────────────────────
+// ── BasinEffects forecast quips (game over screen) ─────────────────────
 
 MenuSystem.FORECASTS = [
     "Next batch: 99.9% pure water",

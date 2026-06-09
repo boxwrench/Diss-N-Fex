@@ -1,35 +1,35 @@
-// ── Weather ───────────────────────────────────────────────────────
-// Ambient weather effects: puddles that form from rain and grow/evaporate,
+// ── BasinEffects ───────────────────────────────────────────────────────
+// Ambient basinEffects effects: pools that form from rain and grow/evaporate,
 // and lightning scorch marks that fade over time.
 
-const Weather = (function () {
+const BasinEffects = (function () {
 
-    var MAX_PUDDLES       = 50;
-    var PUDDLE_GROW_RATE  = 12;     // pixels/sec radius growth
-    var PUDDLE_MAX_RADIUS = 20;
-    var PUDDLE_EVAP_RATE  = 3;      // pixels/sec radius shrink after maxed
+    var MAX_POOLS       = 50;
+    var POOL_GROW_RATE  = 12;     // pixels/sec radius growth
+    var POOL_MAX_RADIUS = 20;
+    var POOL_EVAP_RATE  = 3;      // pixels/sec radius shrink after maxed
     var SCORCH_LIFETIME   = 10;     // seconds before fully faded
 
     // ── Constructor ──────────────────────────────────────────────
-    var MAX_FLOODS       = 5;
-    var FLOOD_MAX_RADIUS = 80;
-    var FLOOD_GROW_RATE  = 8;       // pixels/sec radius growth
+    var MAX_SURGES       = 5;
+    var SURGE_MAX_RADIUS = 80;
+    var SURGE_GROW_RATE  = 8;       // pixels/sec radius growth
 
-    function Weather() {
-        this.puddles   = [];         // { x, y, radius, maxed }
+    function BasinEffects() {
+        this.pools   = [];         // { x, y, radius, maxed }
         this.scorches  = [];         // { x, y, radius, age }
-        this.floods    = [];         // { x, y, radius, life, maxLife }
+        this.surges    = [];         // { x, y, radius, life, maxLife }
         this.buildingDamage = [];    // { x, w, level } — cosmetic damage 1-3
         this.timeOfDay = 0;          // 0 = noon, 0.5 = midnight
     }
 
     // ── Puddles ──────────────────────────────────────────────────
-    Weather.prototype.addPuddle = function (x, y) {
-        if (this.puddles.length >= MAX_PUDDLES) {
-            // Recycle the oldest puddle
-            this.puddles.shift();
+    BasinEffects.prototype.addPool = function (x, y) {
+        if (this.pools.length >= MAX_POOLS) {
+            // Recycle the oldest pool
+            this.pools.shift();
         }
-        this.puddles.push({
+        this.pools.push({
             x:      x,
             y:      y,
             radius: 2,
@@ -38,7 +38,7 @@ const Weather = (function () {
     };
 
     // ── Scorches ─────────────────────────────────────────────────
-    Weather.prototype.addScorch = function (x, y) {
+    BasinEffects.prototype.addScorch = function (x, y) {
         this.scorches.push({
             x:      x,
             y:      y,
@@ -48,7 +48,7 @@ const Weather = (function () {
     };
 
     // ── Building Damage ────────────────────────────────────────────
-    Weather.prototype.damageBuilding = function (x, w) {
+    BasinEffects.prototype.damageBuilding = function (x, w) {
         // Find existing damage entry for this building
         for (var i = 0; i < this.buildingDamage.length; i++) {
             var bd = this.buildingDamage[i];
@@ -61,61 +61,61 @@ const Weather = (function () {
     };
 
     // ── Update ───────────────────────────────────────────────────
-    Weather.prototype.update = function (dt) {
+    BasinEffects.prototype.update = function (dt) {
         var i;
 
-        // Update puddles
-        for (i = this.puddles.length - 1; i >= 0; i--) {
-            var p = this.puddles[i];
+        // Update pools
+        for (i = this.pools.length - 1; i >= 0; i--) {
+            var p = this.pools[i];
 
             if (!p.maxed) {
-                p.radius += PUDDLE_GROW_RATE * dt;
-                if (p.radius >= PUDDLE_MAX_RADIUS) {
-                    p.radius = PUDDLE_MAX_RADIUS;
+                p.radius += POOL_GROW_RATE * dt;
+                if (p.radius >= POOL_MAX_RADIUS) {
+                    p.radius = POOL_MAX_RADIUS;
                     p.maxed  = true;
                 }
             } else {
                 // Evaporate
-                p.radius -= PUDDLE_EVAP_RATE * dt;
+                p.radius -= POOL_EVAP_RATE * dt;
                 if (p.radius <= 0) {
-                    this.puddles.splice(i, 1);
+                    this.pools.splice(i, 1);
                 }
             }
         }
 
-        // Check puddles for flood upgrade
-        for (i = this.puddles.length - 1; i >= 0; i--) {
-            var pp = this.puddles[i];
-            if (pp.radius >= 18 && this.floods.length < MAX_FLOODS) {
+        // Check pools for surge upgrade
+        for (i = this.pools.length - 1; i >= 0; i--) {
+            var pp = this.pools[i];
+            if (pp.radius >= 18 && this.surges.length < MAX_SURGES) {
                 if (Math.random() < 0.01) {
-                    this.floods.push({
+                    this.surges.push({
                         x: pp.x,
                         y: pp.y,
                         radius: 40,
                         life: 15,
                         maxLife: 15,
                     });
-                    this.puddles.splice(i, 1);
+                    this.pools.splice(i, 1);
                 }
             }
         }
 
-        // Update floods
-        for (i = this.floods.length - 1; i >= 0; i--) {
-            var fl = this.floods[i];
+        // Update surges
+        for (i = this.surges.length - 1; i >= 0; i--) {
+            var fl = this.surges[i];
             fl.life -= dt;
             if (fl.life <= 0) {
-                this.floods.splice(i, 1);
+                this.surges.splice(i, 1);
                 continue;
             }
             // Grow radius up to max, then shrink when life is low
             var lifeRatio = fl.life / fl.maxLife;
             if (lifeRatio > 0.3) {
                 // Growing phase
-                fl.radius = Math.min(FLOOD_MAX_RADIUS, fl.radius + FLOOD_GROW_RATE * dt);
+                fl.radius = Math.min(SURGE_MAX_RADIUS, fl.radius + SURGE_GROW_RATE * dt);
             } else {
                 // Shrinking phase
-                fl.radius = FLOOD_MAX_RADIUS * (lifeRatio / 0.3);
+                fl.radius = SURGE_MAX_RADIUS * (lifeRatio / 0.3);
             }
         }
 
@@ -130,9 +130,9 @@ const Weather = (function () {
     };
 
     // ── Flood lookup ──────────────────────────────────────────────
-    Weather.prototype.getFloodAtX = function (x) {
-        for (var i = 0; i < this.floods.length; i++) {
-            var fl = this.floods[i];
+    BasinEffects.prototype.getSurgeAtX = function (x) {
+        for (var i = 0; i < this.surges.length; i++) {
+            var fl = this.surges[i];
             if (Math.abs(x - fl.x) <= fl.radius) {
                 return fl;
             }
@@ -141,20 +141,20 @@ const Weather = (function () {
     };
 
     // ── Clear ──────────────────────────────────────────────────────
-    Weather.prototype.clear = function () {
-        this.puddles.length = 0;
+    BasinEffects.prototype.clear = function () {
+        this.pools.length = 0;
         this.scorches.length = 0;
-        this.floods.length = 0;
+        this.surges.length = 0;
         this.buildingDamage = [];
     };
 
     // ── Draw ─────────────────────────────────────────────────────
-    Weather.prototype.draw = function (ctx) {
+    BasinEffects.prototype.draw = function (ctx) {
         var i;
 
         // ── Puddles (blue ellipses on the ground) ────────────────
-        for (i = 0; i < this.puddles.length; i++) {
-            var p = this.puddles[i];
+        for (i = 0; i < this.pools.length; i++) {
+            var p = this.pools[i];
             if (p.radius <= 0) continue;
 
             ctx.save();
@@ -201,15 +201,15 @@ const Weather = (function () {
         }
 
         // ── Floods (larger dark-blue ellipses with ripple animation) ──
-        for (i = 0; i < this.floods.length; i++) {
-            var fl = this.floods[i];
+        for (i = 0; i < this.surges.length; i++) {
+            var fl = this.surges[i];
             if (fl.radius <= 0) continue;
 
             ctx.save();
             ctx.translate(fl.x, fl.y);
             ctx.scale(1, 0.35); // flatten onto ground
 
-            // Main flood body
+            // Main surge body
             var fAlpha = Math.min(1, fl.life / 2); // fade when nearly expired
             var fGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, fl.radius);
             fGrad.addColorStop(0, 'rgba(40,80,150,' + (fAlpha * 0.6) + ')');
@@ -261,5 +261,5 @@ const Weather = (function () {
         }
     };
 
-    return Weather;
+    return BasinEffects;
 })();

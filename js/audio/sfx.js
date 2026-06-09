@@ -6,8 +6,8 @@
 var SFX = (function () {
     var ctx = null;
     var masterGain = null;
-    var rainSource = null;
-    var rainGain = null;
+    var chlorineSource = null;
+    var chlorineGain = null;
     var _originalMasterVolume = 0.3;
 
     // ── Helpers ──────────────────────────────────────────────────────────
@@ -122,10 +122,10 @@ var SFX = (function () {
          * Start filtered white-noise rain ambient loop.
          * @returns {Function} stop - Call to stop the rain.
          */
-        playRainAmbient: function () {
+        playChlorineAmbient: function () {
             if (!ctx) return function () {};
             // Don't double-start
-            if (rainSource) return function () { SFX.stopRainAmbient(); };
+            if (chlorineSource) return function () { SFX.stopChlorineAmbient(); };
 
             var buffer = createNoise(2); // 2-second looping buffer
             var source = ctx.createBufferSource();
@@ -145,25 +145,25 @@ var SFX = (function () {
             gain.connect(masterGain);
 
             source.start();
-            rainSource = source;
-            rainGain = gain;
+            chlorineSource = source;
+            chlorineGain = gain;
 
             var self = this;
-            return function () { self.stopRainAmbient(); };
+            return function () { self.stopChlorineAmbient(); };
         },
 
         /**
          * Stop rain ambient if currently playing.
          */
-        stopRainAmbient: function () {
-            if (rainSource) {
-                try { rainSource.stop(); } catch (e) {}
-                rainSource.disconnect();
-                rainSource = null;
+        stopChlorineAmbient: function () {
+            if (chlorineSource) {
+                try { chlorineSource.stop(); } catch (e) {}
+                chlorineSource.disconnect();
+                chlorineSource = null;
             }
-            if (rainGain) {
-                rainGain.disconnect();
-                rainGain = null;
+            if (chlorineGain) {
+                chlorineGain.disconnect();
+                chlorineGain = null;
             }
         },
 
@@ -172,7 +172,7 @@ var SFX = (function () {
         /**
          * Very short high-pitched blip (50ms).
          */
-        playRainDrop: function () {
+        playChlorineDrop: function () {
             if (!ctx) return;
             var t = ctx.currentTime;
             var osc = ctx.createOscillator();
@@ -196,7 +196,7 @@ var SFX = (function () {
         /**
          * Short whoosh - filtered noise burst with frequency sweep (100ms).
          */
-        playHailThrow: function () {
+        playOzoneThrow: function () {
             if (!ctx) return;
             var t = ctx.currentTime;
 
@@ -226,7 +226,7 @@ var SFX = (function () {
         /**
          * Hard impact: noise burst + sine thud.
          */
-        playHailImpact: function () {
+        playOzoneImpact: function () {
             if (!ctx) return;
             var t = ctx.currentTime;
 
@@ -266,7 +266,7 @@ var SFX = (function () {
         /**
          * Layered lightning strike: crack + bolt sweep + rumble + volume shock.
          */
-        playLightningStrike: function () {
+        playUVPulse: function () {
             if (!ctx) return;
             var t = ctx.currentTime;
 
@@ -350,7 +350,7 @@ var SFX = (function () {
         /**
          * Lower, longer rumble. Filtered noise 100-200Hz, 1.5s, slow decay, slight delay.
          */
-        playThunder: function () {
+        playUVThunder: function () {
             if (!ctx) return;
             var t = ctx.currentTime;
             var delay = 0.15; // slight delay before rumble starts

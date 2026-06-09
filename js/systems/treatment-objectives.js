@@ -138,8 +138,8 @@ class TreatmentObjectiveSystem {
 
     _updateChlorine(c, game, dt, killDelta) {
         var m = c.metrics;
-        var dosing = game.cloud && game.cloud.isRaining;
-        var boosted = game.powerups && game.powerups.hasEffect && game.powerups.hasEffect('rainBoost');
+        var dosing = game.rig && game.rig.isDosing;
+        var boosted = game.powerups && game.powerups.hasEffect && game.powerups.hasEffect('chlorineBoost');
         if (dosing || boosted) m.residual += (boosted ? 0.34 : 0.22) * dt;
         else m.residual -= 0.045 * dt;
         m.residual += killDelta * 0.025;
@@ -154,7 +154,7 @@ class TreatmentObjectiveSystem {
     _updateTurbidity(c, game, dt, killDelta) {
         var m = c.metrics;
         var dyeActive = game.powerups && game.powerups.getRainbow && game.powerups.getRainbow();
-        var dosing = game.cloud && game.cloud.isRaining;
+        var dosing = game.rig && game.rig.isDosing;
         m.turbidity -= killDelta * 0.8;
         if (dyeActive) m.turbidity -= 0.7 * dt;
         if (dosing) m.turbidity -= 0.18 * dt;
@@ -165,8 +165,8 @@ class TreatmentObjectiveSystem {
 
     _updateOzone(c, game, dt, killDelta) {
         var m = c.metrics;
-        var hailActive = game.projectiles && game.projectiles.hailstones && game.projectiles.hailstones.length > 0;
-        var autoOzone = game.powerups && game.powerups.hasEffect && game.powerups.hasEffect('hailAuto');
+        var hailActive = game.projectiles && game.projectiles.ozoneProjectiles && game.projectiles.ozoneProjectiles.length > 0;
+        var autoOzone = game.powerups && game.powerups.hasEffect && game.powerups.hasEffect('ozoneAuto');
         if (hailActive) m.ozoneDose += 13 * dt;
         if (autoOzone) m.ozoneDose += 18 * dt;
         m.ozoneDose += killDelta * 9;
@@ -176,9 +176,9 @@ class TreatmentObjectiveSystem {
 
     _updateClearwell(c, game, dt, killDelta) {
         var m = c.metrics;
-        var dosing = game.cloud && game.cloud.isRaining;
+        var dosing = game.rig && game.rig.isDosing;
         var hold = game.powerups && game.powerups.hasEffect && game.powerups.hasEffect('slowMo');
-        var breakpoint = game.powerups && game.powerups.hasEffect && game.powerups.hasEffect('acidRain');
+        var breakpoint = game.powerups && game.powerups.hasEffect && game.powerups.hasEffect('breakpointChlorine');
 
         if (dosing || breakpoint) m.residual += (breakpoint ? 0.24 : 0.15) * dt;
         else m.residual -= 0.035 * dt;
