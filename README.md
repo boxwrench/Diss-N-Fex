@@ -14,9 +14,15 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Regulatory--Compliance-California%20Title%2022-brightgreen?style=for-the-badge&logo=googledrive&logoColor=white" alt="Title 22 Status">
-  <img src="https://img.shields.io/badge/Disinfection--Barriers-6%20Active-blue?style=for-the-badge&logo=water&logoColor=white" alt="Disinfection Barriers">
-  <img src="https://img.shields.io/badge/Operator--Rank-Grade%20V%20Superintendent-orange?style=for-the-badge&logo=opsgenie&logoColor=white" alt="Operator Rank">
+  <a href="https://www.waterboards.ca.gov/drinking_water/certlic/drinkingwater/">
+    <img src="https://img.shields.io/badge/Regulatory--Compliance-California%20Title%2022-brightgreen?style=for-the-badge&logo=googledrive&logoColor=white" alt="Title 22 Status">
+  </a>
+  <a href="https://www.epa.gov/dwreginfo/surface-water-treatment-rules">
+    <img src="https://img.shields.io/badge/Disinfection--Barriers-6%20Active-blue?style=for-the-badge&logo=water&logoColor=white" alt="Disinfection Barriers">
+  </a>
+  <a href="https://www.title22.org">
+    <img src="https://img.shields.io/badge/Operator--Rank-Grade%20V%20Superintendent-orange?style=for-the-badge&logo=opsgenie&logoColor=white" alt="Operator Rank">
+  </a>
 </p>
 
 ---

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCADA Disinfection Encyclopedia - Diss N Fex</title>
+    <style>
+        :root {
+            --bg-color: #020813;
+            --card-bg: #07162c;
+            --border-color: #0e2b45;
+            --accent-cyan: #00ffcc;
+            --accent-blue: #00d2ff;
+            --accent-violet: #bf55ec;
+            --accent-yellow: #ffd700;
+            --text-main: #e1f7ff;
+            --text-dim: #88aacc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 32px;
+            letter-spacing: 4px;
+            color: #ffffff;
+            text-shadow: 0 0 10px var(--accent-blue), 0 0 20px rgba(0, 210, 255, 0.4);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .term-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .term-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--accent-blue);
+        }
+
+        .term-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 5px 15px rgba(0, 255, 204, 0.1);
+        }
+
+        .term-card.chlorine::before { background-color: var(--accent-cyan); }
+        .term-card.ozone::before { background-color: #4488aa; }
+        .term-card.uv::before { background-color: var(--accent-violet); }
+        .term-card.regulatory::before { background-color: var(--accent-yellow); }
+
+        .term-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .term-title {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+
+        .term-tag {
+            font-size: 9px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .chlorine .term-tag { background-color: rgba(0, 255, 204, 0.15); color: var(--accent-cyan); }
+        .ozone .term-tag { background-color: rgba(68, 136, 170, 0.15); color: #8cc3e0; }
+        .uv .term-tag { background-color: rgba(191, 85, 236, 0.15); color: #d687f7; }
+        .regulatory .term-tag { background-color: rgba(255, 215, 0, 0.15); color: var(--accent-yellow); }
+
+        .term-def {
+            font-size: 13px;
+            color: var(--text-dim);
+            text-align: justify;
+        }
+
+        .term-equation {
+            margin-top: 10px;
+            padding: 8px;
+            background-color: rgba(2, 8, 19, 0.6);
+            border-radius: 4px;
+            font-size: 12px;
+            color: #ffffff;
+            text-align: center;
+            border-left: 2px solid var(--accent-cyan);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--accent-cyan);
+            border: 1px solid var(--accent-cyan);
+            padding: 10px 24px;
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-cyan);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>SYSTEM ENCYCLOPEDIA</h1>
+        <div class="subtitle">Drinking Water Treatment & Disinfection Terms</div>
+    </header>
+
+    <div class="grid">
+        <!-- 1. Chlorine Residual -->
+        <div class="term-card chlorine">
+            <div class="term-header">
+                <span class="term-title">Chlorine Residual</span>
+                <span class="term-tag">Disinfectant</span>
+            </div>
+            <p class="term-def">
+                The concentration of chlorine (free or combined) remaining in water after the initial chemical demand (reactions with organic matter, metals, etc.) has been satisfied. Maintaining a residual in public distribution networks is vital to provide ongoing protection against pathogen re-growth or cross-connection contamination before the water reaches consumer taps.
+            </p>
+        </div>
+
+        <!-- 2. Clearwell CT -->
+        <div class="term-card chlorine">
+            <div class="term-header">
+                <span class="term-title">Clearwell CT</span>
+                <span class="term-tag">Compliance</span>
+            </div>
+            <p class="term-def">
+                A regulatory concept representing the total disinfection exposure. It is the mathematical product of the active disinfectant residual concentration (<b>C</b>, in mg/L) and the contact time (<b>T</b>, in minutes) that water spends travelling through the plant contact basin or clearwell before entering the network.
+            </p>
+            <div class="term-equation">
+                CT = Disinfectant (mg/L) &times; Time (mins)
+            </div>
+        </div>
+
+        <!-- 3. Ozone Disinfection (O3) -->
+        <div class="term-card ozone">
+            <div class="term-header">
+                <span class="term-title">Ozone Dose (O₃)</span>
+                <span class="term-tag">Oxidation</span>
+            </div>
+            <p class="term-def">
+                Ozone is an extremely powerful chemical oxidant diffused into water to burst cell membranes. It acts almost instantaneously and is highly effective against chlorine-resistant pathogens like <i>Cryptosporidium</i> cysts. However, because ozone is unstable, it rapidly dissipates back into oxygen and leaves no lasting disinfectant residual.
+            </p>
+        </div>
+
+        <!-- 4. Ultraviolet (UV) Disinfection -->
+        <div class="term-card uv">
+            <div class="term-header">
+                <span class="term-title">Ultraviolet (UV) Dose</span>
+                <span class="term-tag">Radiation</span>
+            </div>
+            <p class="term-def">
+                A physical disinfection method that exposes water to electromagnetic radiation in the UV-C spectrum (around 254 nm). The UV rays penetrate pathogen cell walls and disrupt their DNA or RNA structure. This renders the organisms sterile and unable to replicate, neutralizing their threat without adding chemicals to the water.
+            </p>
+        </div>
+
+        <!-- 5. Turbidity -->
+        <div class="term-card regulatory">
+            <div class="term-header">
+                <span class="term-title">Turbidity</span>
+                <span class="term-tag">Water Quality</span>
+            </div>
+            <p class="term-def">
+                A measure of the cloudiness or clarity of water, caused by suspended sediment, microscopic clay, organic particles, or colloidal matter. High raw-water turbidity must be removed because particles can physically "shield" viruses and bacteria from chemical disinfectants and block UV light transmission.
+            </p>
+            <div class="term-equation">
+                Measured in NTU (Nephelometric Turbidity Units)
+            </div>
+        </div>
+
+        <!-- 6. Coagulation & Flocculation -->
+        <div class="term-card regulatory">
+            <div class="term-header">
+                <span class="term-title">Coagulation</span>
+                <span class="term-tag">Pre-treatment</span>
+            </div>
+            <p class="term-def">
+                The process of adding chemical coagulants (such as alum or ferric chloride) to neutralize the negative charges on suspended particles. This allows the particles to collide and clump together into larger, heavier masses called "floc." Floc aggregates settle out in sedimentation basins or are trapped by sand filters.
+            </p>
+        </div>
+
+        <!-- 7. Filter Backwash -->
+        <div class="term-card regulatory">
+            <div class="term-header">
+                <span class="term-title">Filter Backwash</span>
+                <span class="term-tag">Maintenance</span>
+            </div>
+            <p class="term-def">
+                The process of cleaning a sand or multimedia filter. By reversing the flow of clean water and injecting air scour from the bottom, the sand bed is fluidized, lifting and washing away accumulated sediment, floc, and pathogens into a waste line. Backwashing restores filter capacity and prevents turbidity breakthrough.
+            </p>
+        </div>
+
+        <!-- 8. pH Adjustment (Shock) -->
+        <div class="term-card chlorine">
+            <div class="term-header">
+                <span class="term-title">pH Control</span>
+                <span class="term-tag">Chemistry</span>
+            </div>
+            <p class="term-def">
+                Controlling the hydrogen ion concentration (acidity or basicity) of water. Chlorine disinfection efficiency is heavily pH-dependent. At a lower pH, chlorine exists primarily as hypochlorous acid (HOCl), which is 80-100x more germicidal than the hypochlorite ion (OCl⁻) that dominates at higher pH.
+            </p>
+        </div>
+
+        <!-- 9. California Title 22 -->
+        <div class="term-card regulatory">
+            <div class="term-header">
+                <span class="term-title">California Title 22</span>
+                <span class="term-tag">Regulations</span>
+            </div>
+            <p class="term-def">
+                Part of the California Code of Regulations (CCR) Division 4, which contains state laws and standards for public drinking water quality, municipal water system operations, cross-connection control, and recycled water treatment limits. It specifies the log-removal targets for pathogens like Giardia (3-log) and viruses (4-log).
+            </p>
+        </div>
+
+        <!-- 10. Log Removal -->
+        <div class="term-card regulatory">
+            <div class="term-header">
+                <span class="term-title">Log Removal</span>
+                <span class="term-tag">Metrics</span>
+            </div>
+            <p class="term-def">
+                A mathematical scale used to measure the percentage of pathogens inactivated or removed. A 1-log removal equals 90% inactivation, 2-log equals 99%, 3-log equals 99.9%, and a 4-log removal represents a 99.99% reduction of target microorganisms in the finished water.
+            </p>
+            <div class="term-equation">
+                99.99% Reduction = 4-Log Inactivation
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <a href="#" onclick="window.close(); history.back(); return false;" class="btn">Return to Basin Control</a>
+    </footer>
+</div>
+
+</body>
+</html>
