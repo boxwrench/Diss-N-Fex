@@ -3,25 +3,25 @@
 // Depends on global CFG.
 
 var ATTACK_UNLOCKS = {
-    rain:      { wave: 1,  announcement: 'Operator online. Chlorine feed pump primed.' },
-    hail:      { wave: 3,  announcement: 'Ozone diffuser ready.' },
-    lightning: { wave: 6,  announcement: 'UV lamp bank warmed up.' },
-    tornado:   { wave: 10, announcement: 'Filter backwash vortex initialized.' },
-    frost:     { wave: 8,  announcement: 'Coagulant feed line primed.' },
-    fog:       { wave: 12, announcement: 'pH buffer shock release unlocked.' },
+    chlorine:      { wave: 1,  announcement: 'Operator online. Chlorine feed pump primed.' },
+    ozone:      { wave: 3,  announcement: 'Ozone diffuser ready.' },
+    uv: { wave: 6,  announcement: 'UV lamp bank warmed up.' },
+    backwash:   { wave: 10, announcement: 'Filter backwash vortex initialized.' },
+    coagulant:     { wave: 8,  announcement: 'Coagulant feed line primed.' },
+    ph:       { wave: 12, announcement: 'pH buffer shock release unlocked.' },
 };
 
 var UPGRADES = {
-    rainDamage:      { name: 'Chlorine Residual', maxLevel: 5, cost: [8,20,40,70,110],  desc: '+20% chlorine contact damage' },
-    rainWidth:       { name: 'Contact Basin Spray', maxLevel: 3, cost: [12,30,60],      desc: '+25% spray dispersion angle' },
-    hailDamage:      { name: 'Ozone Dose',        maxLevel: 5, cost: [8,22,45,80,120],  desc: '+1 ozone oxidation damage' },
-    hailPierce:      { name: 'Diffuser Manifold', maxLevel: 3, cost: [20,50,90],        desc: 'Ozone bubbles hit +1 pathogen' },
-    lightningAoe:    { name: 'UV Reactor Width',  maxLevel: 4, cost: [15,35,65,100],    desc: '+20% UV exposure radius' },
+    chlorineDamage:      { name: 'Chlorine Residual', maxLevel: 5, cost: [8,20,40,70,110],  desc: '+20% chlorine contact damage' },
+    chlorineWidth:       { name: 'Contact Basin Spray', maxLevel: 3, cost: [12,30,60],      desc: '+25% spray dispersion angle' },
+    ozoneDamage:      { name: 'Ozone Dose',        maxLevel: 5, cost: [8,22,45,80,120],  desc: '+1 ozone oxidation damage' },
+    ozonePierce:      { name: 'Diffuser Manifold', maxLevel: 3, cost: [20,50,90],        desc: 'Ozone bubbles hit +1 pathogen' },
+    uvAoe:    { name: 'UV Reactor Width',  maxLevel: 4, cost: [15,35,65,100],    desc: '+20% UV exposure radius' },
     uvCharge: { name: 'Lamp Warmup Tuning',maxLevel: 3, cost: [20,50,90],        desc: '-2s UV reactor recharge' },
-    tornadoDuration: { name: 'Filter Backwash',   maxLevel: 3, cost: [15,40,75],        desc: '+1s filter vortex duration' },
-    tornadoWidth:    { name: 'Sand Bed Suction',  maxLevel: 3, cost: [15,40,75],        desc: '+15px filter capture width' },
-    frostDuration:   { name: 'Floc Contact Time', maxLevel: 3, cost: [15,40,75],        desc: '+1s coagulation clumping' },
-    fogRadius:       { name: 'pH Buffer Radius',  maxLevel: 3, cost: [15,40,75],        desc: '+50px adjustment zone' },
+    backwashDuration: { name: 'Filter Backwash',   maxLevel: 3, cost: [15,40,75],        desc: '+1s filter vortex duration' },
+    backwashWidth:    { name: 'Sand Bed Suction',  maxLevel: 3, cost: [15,40,75],        desc: '+15px filter capture width' },
+    coagulantDuration:   { name: 'Floc Contact Time', maxLevel: 3, cost: [15,40,75],        desc: '+1s coagulation clumping' },
+    phRadius:       { name: 'pH Buffer Radius',  maxLevel: 3, cost: [15,40,75],        desc: '+50px adjustment zone' },
     meterRecharge:   { name: 'Chemical Feed Pumps', maxLevel: 4, cost: [12,30,55,90],   desc: '+25% reagent refill rate' },
     comboWindow:     { name: 'Contact Time',      maxLevel: 3, cost: [15,40,75],        desc: '+0.5s reaction combo timing' },
     moveSpeed:       { name: 'Operator Boots',    maxLevel: 3, cost: [10,25,50],        desc: '+15% operator movement speed' },
@@ -30,7 +30,7 @@ var UPGRADES = {
 class Progression {
 
     constructor() {
-        this.unlockedAttacks = { rain: true, hail: false, lightning: false, tornado: false, frost: false, fog: false };
+        this.unlockedAttacks = { chlorine: true, ozone: false, uv: false, backwash: false, coagulant: false, ph: false };
         this.upgradeLevels   = this._defaultUpgradeLevels();
         this.treatmentPoints      = 0;
         this.totalStormPoints = 0;
@@ -150,29 +150,29 @@ class Progression {
         var lv = this.upgradeLevels;
 
         switch (stat) {
-            case 'rainDPS':
-                return CFG.CHLORINE.DPS * (1 + 0.2 * lv.rainDamage);
+            case 'chlorineDPS':
+                return CFG.CHLORINE.DPS * (1 + 0.2 * lv.chlorineDamage);
 
-            case 'rainConeWidth':
-                return CFG.CHLORINE.CONE_WIDTH * (1 + 0.25 * lv.rainWidth);
+            case 'chlorineConeWidth':
+                return CFG.CHLORINE.CONE_WIDTH * (1 + 0.25 * lv.chlorineWidth);
 
-            case 'hailDamage':
-                return CFG.OZONE.DAMAGE + lv.hailDamage;
+            case 'ozoneDamage':
+                return CFG.OZONE.DAMAGE + lv.ozoneDamage;
 
-            case 'hailPierce':
-                return 1 + lv.hailPierce;
+            case 'ozonePierce':
+                return 1 + lv.ozonePierce;
 
-            case 'lightningAoE':
-                return CFG.UV_PULSE.AOE_RADIUS * (1 + 0.2 * lv.lightningAoe);
+            case 'uvAoE':
+                return CFG.UV_PULSE.AOE_RADIUS * (1 + 0.2 * lv.uvAoe);
 
-            case 'lightningChargeTime':
+            case 'uvChargeTime':
                 return Math.max(5, CFG.UV_PULSE.CHARGE_TIME - 2 * lv.uvCharge);
 
-            case 'tornadoDuration':
-                return CFG.BACKWASH.DURATION + lv.tornadoDuration;
+            case 'backwashDuration':
+                return CFG.BACKWASH.DURATION + lv.backwashDuration;
 
-            case 'tornadoWidth':
-                return CFG.BACKWASH.WIDTH + 15 * lv.tornadoWidth;
+            case 'backwashWidth':
+                return CFG.BACKWASH.WIDTH + 15 * lv.backwashWidth;
 
             case 'meterRechargeMultiplier':
                 return 1 + 0.25 * lv.meterRecharge;
@@ -180,20 +180,20 @@ class Progression {
             case 'comboWindow':
                 return CFG.COMBO.WINDOW + 0.5 * lv.comboWindow;
 
-            case 'cloudSpeed':
+            case 'rigSpeed':
                 return CFG.RIG.SPEED * (1 + 0.15 * lv.moveSpeed);
 
-            case 'frostChargeTime':
+            case 'coagulantChargeTime':
                 return CFG.COAGULANT.CHARGE_TIME;
 
-            case 'fogDuration':
+            case 'phDuration':
                 return CFG.PH_SHOCK.DURATION;
 
-            case 'frostDuration':
-                return CFG.COAGULANT.FREEZE_DURATION + lv.frostDuration;
+            case 'coagulantDuration':
+                return CFG.COAGULANT.FREEZE_DURATION + lv.coagulantDuration;
 
-            case 'fogRadius':
-                return CFG.PH_SHOCK.RADIUS + 50 * lv.fogRadius;
+            case 'phRadius':
+                return CFG.PH_SHOCK.RADIUS + 50 * lv.phRadius;
 
             default:
                 return 0;
@@ -300,7 +300,7 @@ class Progression {
         } catch (e) { /* ignore */ }
 
         // Reset to defaults
-        this.unlockedAttacks      = { rain: true, hail: false, lightning: false, tornado: false, frost: false, fog: false };
+        this.unlockedAttacks      = { chlorine: true, ozone: false, uv: false, backwash: false, coagulant: false, ph: false };
         this.upgradeLevels        = this._defaultUpgradeLevels();
         this.treatmentPoints          = 0;
         this.totalStormPoints     = 0;

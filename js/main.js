@@ -424,14 +424,14 @@
         gameTime += dt;
 
         // Effective stats from upgrades
-        var effCloudSpeed = progression.getEffective('cloudSpeed');
-        var effRainDPS = progression.getEffective('rainDPS');
-        var effRainCone = progression.getEffective('rainConeWidth');
-        var effHailDmg = progression.getEffective('hailDamage');
-        var effLightningAoE = progression.getEffective('lightningAoE');
-        var effLightningCharge = progression.getEffective('lightningChargeTime');
-        var effTornadoDur = progression.getEffective('tornadoDuration');
-        var effTornadoW = progression.getEffective('tornadoWidth');
+        var effCloudSpeed = progression.getEffective('rigSpeed');
+        var effRainDPS = progression.getEffective('chlorineDPS');
+        var effRainCone = progression.getEffective('chlorineConeWidth');
+        var effHailDmg = progression.getEffective('ozoneDamage');
+        var effLightningAoE = progression.getEffective('uvAoE');
+        var effLightningCharge = progression.getEffective('uvChargeTime');
+        var effTornadoDur = progression.getEffective('backwashDuration');
+        var effTornadoW = progression.getEffective('backwashWidth');
         var effRecharge = progression.getEffective('meterRechargeMultiplier');
         var effComboWindow = progression.getEffective('comboWindow');
 
@@ -599,7 +599,7 @@
             var cone = projectiles.spawnFrost(rig.x, rig.y + rig.height * 0.5, frostDir);
             // Extend cone to reach the ground
             cone.length = CFG.GROUND_Y - rig.y;
-            var effFreezeDur = progression.getEffective('frostDuration');
+            var effFreezeDur = progression.getEffective('coagulantDuration');
             var origFreeze = CFG.COAGULANT.FREEZE_DURATION;
             CFG.COAGULANT.FREEZE_DURATION = effFreezeDur;
             collision.checkFrost(cone, pedManager.getAlive(), particles);
@@ -612,7 +612,7 @@
             rig.useFog();
             rig.addAnger(0.5);
             achievements.trackAttack('ph');
-            var effFogRadius = progression.getEffective('fogRadius');
+            var effFogRadius = progression.getEffective('phRadius');
             var fogZone = projectiles.spawnFog(rig.x, CFG.GROUND_Y);
             fogZone.radius = effFogRadius;
         }

@@ -926,19 +926,19 @@ class MenuSystem {
 
         // Color-coding by upgrade type
         var upgradeColors = {
-            rainDamage:      '#4488dd',
-            rainWidth:       '#4488dd',
-            hailDamage:      '#aaddee',
-            hailPierce:      '#aaddee',
-            lightningAoe:    '#ddcc00',
-            uvCharge: '#ddcc00',
-            tornadoDuration: '#aa8855',
-            tornadoWidth:    '#aa8855',
-            frostDuration:   '#88ccff',
-            fogRadius:       '#888899',
-            meterRecharge:   '#ffffff',
-            comboWindow:     '#ffffff',
-            moveSpeed:       '#ffffff',
+            chlorineDamage:    '#4488dd',
+            chlorineWidth:     '#4488dd',
+            ozoneDamage:       '#aaddee',
+            ozonePierce:       '#aaddee',
+            uvAoe:             '#ddcc00',
+            uvCharge:          '#ddcc00',
+            backwashDuration:  '#aa8855',
+            backwashWidth:     '#aa8855',
+            coagulantDuration: '#88ccff',
+            phRadius:          '#888899',
+            meterRecharge:     '#ffffff',
+            comboWindow:       '#ffffff',
+            moveSpeed:         '#ffffff',
         };
 
         // Split upgrades into two columns:
