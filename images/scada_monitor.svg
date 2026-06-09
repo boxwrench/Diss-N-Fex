@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="100%" height="100%">
+  <defs>
+    <!-- Dark green terminal gradient -->
+    <linearGradient id="termBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020803" />
+      <stop offset="50%" stop-color="#041206" />
+      <stop offset="100%" stop-color="#071d0a" />
+    </linearGradient>
+
+    <!-- Green Terminal Glow -->
+    <filter id="greenGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Red Alarm Glow -->
+    <filter id="redGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Scanline Pattern -->
+    <pattern id="scanlines" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="#000000" opacity="0.18" />
+    </pattern>
+  </defs>
+
+  <style>
+    @keyframes scanline {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(240px); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.9; }
+    }
+    @keyframes fastPulse {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+    @keyframes graphScroll {
+      0% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: -320; }
+    }
+    
+    .term-text {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: bold;
+    }
+    .grid-lines {
+      stroke: #0a2f10;
+      stroke-width: 0.8;
+      opacity: 0.7;
+    }
+    .alert-light {
+      animation: fastPulse 1.5s infinite;
+    }
+    .status-light {
+      animation: pulse 2.5s infinite;
+    }
+    .animated-path-cl {
+      stroke-dasharray: 20, 5;
+      animation: graphScroll 12s linear infinite;
+    }
+    .animated-path-tur {
+      stroke-dasharray: 10, 3;
+      animation: graphScroll 8s linear infinite;
+    }
+    .scan-beam {
+      animation: scanline 6s linear infinite;
+    }
+  </style>
+
+  <!-- Background -->
+  <rect width="800" height="240" fill="url(#termBg)" />
+
+  <!-- Grid Pattern -->
+  <g>
+    <!-- Horizontal lines -->
+    <path class="grid-lines" d="M0,20 H800 M0,40 H800 M0,60 H800 M0,80 H800 M0,100 H800 M0,120 H800 M0,140 H800 M0,160 H800 M0,180 H800 M0,200 H800 M0,220 H800" />
+    <!-- Vertical lines -->
+    <path class="grid-lines" d="M40,0 V240 M80,0 V240 M120,0 V240 M160,0 V240 M200,0 V240 M240,0 V240 M280,0 V240 M320,0 V240 M360,0 V240 M400,0 V240 M440,0 V240 M480,0 V240 M520,0 V240 M560,0 V240 M600,0 V240 M640,0 V240 M680,0 V240 M720,0 V240 M760,0 V240" />
+  </g>
+
+  <!-- Apply scanlines -->
+  <rect width="800" height="240" fill="url(#scanlines)" />
+
+  <!-- CRT Screen border highlight -->
+  <rect width="800" height="240" fill="none" stroke="#10ff30" stroke-width="2" opacity="0.3" filter="url(#greenGlow)" />
+
+  <!-- Moving scanline beam -->
+  <line class="scan-beam" x1="0" y1="0" x2="800" y2="0" stroke="#10ff30" stroke-width="1.5" opacity="0.12" filter="url(#greenGlow)" />
+
+  <!-- ── LEFT PANEL: SCADA CHARTS (Width: ~460) ── -->
+  <g transform="translate(20, 20)">
+    <text x="0" y="12" class="term-text" fill="#10ff30" font-size="12" filter="url(#greenGlow)">[ SCADA REAL-TIME TREND ANALYSIS ]</text>
+    
+    <!-- Chart Axis lines -->
+    <line x1="40" y1="40" x2="40" y2="180" stroke="#10ff30" stroke-width="1.5" opacity="0.6"/>
+    <line x1="40" y1="180" x2="440" y2="180" stroke="#10ff30" stroke-width="1.5" opacity="0.6"/>
+
+    <!-- Y-Axis Labels -->
+    <text x="32" y="44" class="term-text" fill="#10ff30" font-size="8" text-anchor="end" opacity="0.8">1.5</text>
+    <text x="32" y="85" class="term-text" fill="#10ff30" font-size="8" text-anchor="end" opacity="0.8">1.0</text>
+    <text x="32" y="125" class="term-text" fill="#10ff30" font-size="8" text-anchor="end" opacity="0.8">0.5</text>
+    <text x="32" y="165" class="term-text" fill="#10ff30" font-size="8" text-anchor="end" opacity="0.8">0.0</text>
+
+    <!-- X-Axis Labels -->
+    <text x="40" y="192" class="term-text" fill="#10ff30" font-size="8" opacity="0.8">-60s</text>
+    <text x="240" y="192" class="term-text" fill="#10ff30" font-size="8" text-anchor="middle" opacity="0.8">-30s</text>
+    <text x="440" y="192" class="term-text" fill="#10ff30" font-size="8" text-anchor="end" opacity="0.8">Now</text>
+
+    <!-- Legend -->
+    <line x1="280" y1="12" x2="295" y2="12" stroke="#00d2ff" stroke-width="2" />
+    <text x="300" y="15" class="term-text" fill="#00d2ff" font-size="9">Chlorine (mg/L)</text>
+    <line x1="390" y1="12" x2="405" y2="12" stroke="#ffaa00" stroke-width="2" />
+    <text x="410" y="15" class="term-text" fill="#ffaa00" font-size="9">Turbidity (NTU)</text>
+
+    <!-- Graph lines (with morphing animations to make it wave) -->
+    
+    <!-- Chlorine Residual Graph (Cyan) -->
+    <path class="animated-path-cl" fill="none" stroke="#00d2ff" stroke-width="2" filter="url(#greenGlow)">
+      <animate attributeName="d" dur="5s" repeatCount="indefinite"
+        values="M 40,90 Q 90,80 140,110 T 240,75 T 340,95 T 440,82;
+                M 40,85 Q 90,105 140,70 T 240,98 T 340,78 T 440,88;
+                M 40,90 Q 90,80 140,110 T 240,75 T 340,95 T 440,82" />
+    </path>
+
+    <!-- Turbidity Graph (Orange) -->
+    <path class="animated-path-tur" fill="none" stroke="#ffaa00" stroke-width="1.8">
+      <animate attributeName="d" dur="7s" repeatCount="indefinite"
+        values="M 40,150 Q 80,140 120,60 T 200,145 T 300,155 T 440,162;
+                M 40,158 Q 80,65 120,135 T 200,160 T 300,140 T 440,155;
+                M 40,150 Q 80,140 120,60 T 200,145 T 300,155 T 440,162" />
+    </path>
+
+    <!-- Warning Line (Regulatory Max Turbidity 1.0 NTU) -->
+    <line x1="40" y1="85" x2="440" y2="85" stroke="#ff3333" stroke-width="1" stroke-dasharray="4,4" opacity="0.5" />
+    <text x="435" y="80" class="term-text" fill="#ff3333" font-size="8" text-anchor="end" opacity="0.8">REGULATORY LIMIT (1.0 NTU)</text>
+  </g>
+
+  <!-- ── RIGHT PANEL: SYSTEM STATS & BIO (Width: ~300) ── -->
+  <g transform="translate(490, 20)">
+    <text x="0" y="12" class="term-text" fill="#10ff30" font-size="12" filter="url(#greenGlow)">[ SYSTEM DIAGNOSTICS ]</text>
+    
+    <!-- Separator -->
+    <line x1="0" y1="20" x2="290" y2="20" stroke="#10ff30" stroke-width="1" opacity="0.4" />
+
+    <!-- Status Fields -->
+    <!-- Status: ONLINE -->
+    <text x="0" y="38" class="term-text" fill="#88cc99" font-size="10">SYS STATUS:</text>
+    <rect x="85" y="27" width="60" height="15" fill="#10ff30" rx="3" opacity="0.15" />
+    <text x="115" y="38" class="term-text" fill="#10ff30" font-size="9" text-anchor="middle" filter="url(#greenGlow)">ONLINE</text>
+    <circle class="status-light" cx="160" cy="35" r="4.5" fill="#10ff30" filter="url(#greenGlow)" />
+
+    <!-- Flow Rate -->
+    <text x="0" y="58" class="term-text" fill="#88cc99" font-size="10">BASIN FLOW:</text>
+    <text x="85" y="58" class="term-text" fill="#ffffff" font-size="10">3.24 MGD</text>
+
+    <!-- Target Compliance -->
+    <text x="0" y="78" class="term-text" fill="#88cc99" font-size="10">LOG REMOVAL:</text>
+    <text x="85" y="78" class="term-text" fill="#00d2ff" font-size="10" font-weight="900">99.99% (PASS)</text>
+
+    <!-- Alarm: VIP detected! -->
+    <rect x="0" y="92" width="290" height="24" fill="#ff3333" rx="3" opacity="0.1" />
+    <circle class="alert-light" cx="15" cy="104" r="5" fill="#ff3333" filter="url(#redGlow)" />
+    <text x="32" y="107" class="term-text" fill="#ff5555" font-size="9" font-weight="900" filter="url(#redGlow)">SCADA: SUPERBUG CONTAMINANT SPIKE</text>
+
+    <!-- Separator -->
+    <line x1="0" y1="128" x2="290" y2="128" stroke="#10ff30" stroke-width="1" opacity="0.4" />
+
+    <!-- Operator / Regulatory Bio -->
+    <text x="0" y="146" class="term-text" fill="#88cc99" font-size="9">OPERATOR:</text>
+    <text x="75" y="146" class="term-text" fill="#ffffff" font-size="10">KEITH WILKINSON</text>
+    
+    <text x="0" y="164" class="term-text" fill="#88cc99" font-size="9">REGULATION:</text>
+    <text x="75" y="164" class="term-text" fill="#ffffff" font-size="9">CALIFORNIA TITLE 22</text>
+
+    <text x="0" y="182" class="term-text" fill="#88cc99" font-size="9">TECHNICAL BLOG:</text>
+    <text x="110" y="182" class="term-text" fill="#00ffcc" font-size="10" filter="url(#greenGlow)">www.title22.org</text>
+
+    <!-- Water droplet logo background -->
+    <path d="M 265,30 C 265,30 280,45 280,55 C 280,62 273,68 265,68 C 257,68 250,62 250,55 C 250,45 265,30 265,30 Z" fill="none" stroke="#10ff30" stroke-width="1.2" opacity="0.3" filter="url(#greenGlow)" />
+  </g>
+
+</svg>

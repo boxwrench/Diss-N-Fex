@@ -1,0 +1,260 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 280" width="100%" height="100%">
+  <defs>
+    <!-- Dark tech gradient background -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020813" />
+      <stop offset="50%" stop-color="#07162c" />
+      <stop offset="100%" stop-color="#0a2246" />
+    </linearGradient>
+
+    <!-- Neon Cyan Glow -->
+    <filter id="cyanGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Neon Pink Glow -->
+    <filter id="pinkGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComponentTransfer in="blur" result="brightBlur">
+        <feFuncA type="linear" slope="1.5"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="brightBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Neon Yellow Glow -->
+    <filter id="yellowGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    /* CSS Animations */
+    @keyframes gridScroll {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(40px); }
+    }
+    @keyframes titlePulse {
+      0%, 100% { opacity: 0.9; text-shadow: 0 0 8px #00d2ff, 0 0 20px #0066ff; }
+      50% { opacity: 1; text-shadow: 0 0 15px #00d2ff, 0 0 35px #0066ff, 0 0 50px #0033aa; }
+    }
+    @keyframes cloudFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(1deg); }
+    }
+    @keyframes dripFall {
+      0% { transform: translateY(0) scaleY(1); opacity: 0.8; }
+      70% { transform: translateY(120px) scaleY(1.2); opacity: 0.8; }
+      90% { transform: translateY(130px) scaleY(0.4) scaleX(1.5); opacity: 0.4; }
+      100% { transform: translateY(135px) scale(0); opacity: 0; }
+    }
+    @keyframes lightningZap {
+      0%, 94%, 98%, 100% { opacity: 0; }
+      95%, 97% { opacity: 1; }
+      96% { opacity: 0.5; }
+    }
+    @keyframes ciliaWiggle {
+      0%, 100% { transform: skewX(-3deg) scaleY(1); }
+      50% { transform: skewX(3deg) scaleY(0.95); }
+    }
+    @keyframes virusSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes amoebaMorph {
+      0%, 100% { d: path("M 0,-18 Q 12,-16 14,-2 Q 10,12 0,10 Q -12,12 -14,-2 Q -12,-16 0,-18 Z"); }
+      50% { d: path("M 0,-20 Q 15,-13 11,-4 Q 14,8 0,12 Q -14,8 -11,-4 Q -15,-13 0,-20 Z"); }
+    }
+    @keyframes textGlitch {
+      0%, 95%, 100% { transform: translate(0); }
+      96% { transform: translate(-2px, 1px); }
+      97% { transform: translate(2px, -1px); }
+      98% { transform: translate(-1px, -2px); }
+      99% { transform: translate(1px, 2px); }
+    }
+
+    .grid-lines {
+      stroke: #0d274c;
+      stroke-width: 1;
+      opacity: 0.6;
+    }
+    .grid-scroller {
+      animation: gridScroll 4s linear infinite;
+    }
+    .game-title {
+      font-family: 'Courier New', Courier, monospace, sans-serif;
+      font-weight: 900;
+      font-size: 58px;
+      fill: #e1f7ff;
+      letter-spacing: 6px;
+      animation: titlePulse 3s ease-in-out infinite, textGlitch 8s infinite;
+      text-anchor: middle;
+    }
+    .subtitle {
+      font-family: 'Courier New', Courier, monospace, sans-serif;
+      font-size: 11px;
+      letter-spacing: 4px;
+      fill: #00ffcc;
+      text-anchor: middle;
+      font-weight: bold;
+      opacity: 0.8;
+    }
+    .operator-cloud {
+      animation: cloudFloat 4s ease-in-out infinite;
+    }
+    .rain-drip {
+      animation: dripFall 1.8s linear infinite;
+    }
+    .zap-path {
+      animation: lightningZap 6s ease-in-out infinite;
+    }
+    .bacteria-body {
+      animation: ciliaWiggle 1.5s ease-in-out infinite;
+    }
+    .virus-rotor {
+      transform-origin: 0px -15px;
+      animation: virusSpin 6s linear infinite;
+    }
+    .amoeba-shape {
+      animation: amoebaMorph 3s ease-in-out infinite;
+    }
+  </style>
+
+  <!-- Background -->
+  <rect width="800" height="280" fill="url(#bgGrad)" />
+
+  <!-- Grid Tech Lines (scrolling vertically for motion) -->
+  <g class="grid-scroller">
+    <!-- Horizontal lines spaced by 40px -->
+    <path class="grid-lines" d="M0,0 H800 M0,40 H800 M0,80 H800 M0,120 H800 M0,160 H800 M0,200 H800 M0,240 H800 M0,280 H800 M0,320 H800" />
+  </g>
+  <!-- Vertical lines -->
+  <path class="grid-lines" d="M40,0 V280 M80,0 V280 M120,0 V280 M160,0 V280 M200,0 V280 M240,0 V280 M280,0 V280 M320,0 V280 M360,0 V280 M400,0 V280 M440,0 V280 M480,0 V280 M520,0 V280 M560,0 V280 M600,0 V280 M640,0 V280 M680,0 V280 M720,0 V280 M760,0 V280" />
+
+  <!-- Vignette/Shadow overlay -->
+  <rect width="800" height="280" fill="none" stroke="#00d2ff" stroke-width="2" opacity="0.25" />
+
+  <!-- ── MAIN TITLE ── -->
+  <g transform="translate(400, 110)">
+    <text class="game-title" filter="url(#cyanGlow)">DISS N FEX</text>
+    <text y="38" class="subtitle">DRINKING WATER DISINFECTION TERMINAL</text>
+    <line x1="-160" y1="52" x2="160" y2="52" stroke="#00ffcc" stroke-width="1.5" opacity="0.6" filter="url(#cyanGlow)"/>
+    <text y="70" font-family="'Courier New', monospace" font-size="10" fill="#88aacc" text-anchor="middle" letter-spacing="1">SCADA HYDRAULIC MODEL // BY K. WILKINSON</text>
+  </g>
+
+  <!-- ── OPERATOR CLOUD (Left Side) ── -->
+  <g class="operator-cloud" transform="translate(110, 50)">
+    <!-- Cloud shape -->
+    <path d="M 0,15 A 15,15 0 0,1 12,-2 A 20,20 0 0,1 42,-5 A 18,18 0 0,1 68,5 A 14,14 0 0,1 78,18 A 12,12 0 0,1 72,28 L -5,28 A 12,12 0 0,1 0,15 Z" fill="#ffffff" filter="url(#cyanGlow)" opacity="0.9" />
+    <path d="M 8,17 A 10,10 0 0,1 18,5 A 15,15 0 0,1 40,2 A 12,12 0 0,1 56,12 A 10,10 0 0,1 62,20 L 2,20 Z" fill="#ddf5ff" />
+    
+    <!-- Face on cloud -->
+    <circle cx="25" cy="18" r="2" fill="#0c2246" />
+    <circle cx="45" cy="18" r="2" fill="#0c2246" />
+    <path d="M 31,23 Q 35,26 39,23" stroke="#0c2246" stroke-width="1.5" fill="none" stroke-linecap="round" />
+
+    <!-- Chlorine Drips (Falling) -->
+    <!-- Drip 1 -->
+    <g transform="translate(15, 36)">
+      <path class="rain-drip" d="M 0,0 C -2,4 -3,7 -3,9 C -3,11 -1,13 0,13 C 1,13 3,11 3,9 C 3,7 2,4 0,0 Z" fill="#00ffff" filter="url(#cyanGlow)" />
+    </g>
+    <!-- Drip 2 -->
+    <g transform="translate(38, 36)">
+      <path class="rain-drip" d="M 0,0 C -2,4 -3,7 -3,9 C -3,11 -1,13 0,13 C 1,13 3,11 3,9 C 3,7 2,4 0,0 Z" fill="#00ffff" filter="url(#cyanGlow)" style="animation-delay: 0.6s;" />
+    </g>
+    <!-- Drip 3 -->
+    <g transform="translate(58, 36)">
+      <path class="rain-drip" d="M 0,0 C -2,4 -3,7 -3,9 C -3,11 -1,13 0,13 C 1,13 3,11 3,9 C 3,7 2,4 0,0 Z" fill="#00ffff" filter="url(#cyanGlow)" style="animation-delay: 1.2s;" />
+    </g>
+  </g>
+
+  <!-- ── UV LIGHTNING BOLT (Right Side) ── -->
+  <g transform="translate(620, 20)">
+    <!-- Generator/Clouds background -->
+    <path d="M -10,10 A 10,10 0 0,1 2,-2 A 14,14 0 0,1 25,-4 A 12,12 0 0,1 42,4 A 10,10 0 0,1 48,12 L -12,12 Z" fill="#1b395e" opacity="0.6" />
+    <path d="M 5,12 A 10,10 0 0,1 18,2 A 12,12 0 0,1 36,4 L 40,12 Z" fill="#2d5b8c" opacity="0.4" />
+    
+    <!-- Animating Lightning Bolt -->
+    <path class="zap-path" d="M 18,12 L 0,65 L 18,65 L -5,130 L 25,130 L -15,210" fill="none" stroke="#ffff33" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#yellowGlow)" />
+    <path class="zap-path" d="M 18,12 L 0,65 L 18,65 L -5,130 L 25,130 L -15,210" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <!-- Ground Line (SCADA Basin Bottom) -->
+  <line x1="0" y1="240" x2="800" y2="240" stroke="#00ffcc" stroke-width="3" filter="url(#cyanGlow)" />
+  <line x1="0" y1="240" x2="800" y2="240" stroke="#ffffff" stroke-width="1" />
+
+  <!-- ── ENEMY PATHOGENS (At the bottom) ── -->
+
+  <!-- 1. Bacillus (Left-Center) -->
+  <g class="bacteria-body" transform="translate(240, 240)">
+    <!-- Cilia wiggling underneath (drawn as static lines warped by skew animation) -->
+    <path d="M-6,-22 L-11,-24 M-6,-16 L-12,-17 M-6,-10 L-12,-10 M-6,-4 L-11,-3" stroke="#226622" stroke-width="1.2" />
+    <path d="M6,-22 L11,-24 M6,-16 L12,-17 M6,-10 L12,-10 M6,-4 L11,-3" stroke="#226622" stroke-width="1.2" />
+    <!-- Cell Wall -->
+    <rect x="-6" y="-26" width="12" height="26" rx="5" fill="#44aa44" stroke="#1c501c" stroke-width="2" />
+    <!-- Nucleus details -->
+    <ellipse cx="0" cy="-13" rx="2" ry="6" fill="#1c501c" />
+    <!-- Label -->
+    <text y="13" font-family="monospace" font-size="8" fill="#44aa44" text-anchor="middle" font-weight="bold">Bacillus</text>
+  </g>
+
+  <!-- 2. Amoeba (Far Left) -->
+  <g transform="translate(70, 240)">
+    <!-- Shape is morphed by SVG CSS keyframes -->
+    <path class="amoeba-shape" d="M 0,-18 Q 12,-16 14,-2 Q 10,12 0,10 Q -12,12 -14,-2 Q -12,-16 0,-18 Z" fill="#dd5588" stroke="#882255" stroke-width="2" />
+    <circle cx="-2" cy="-5" r="3" fill="#661133" />
+    <circle cx="-2.5" cy="-5.5" r="1" fill="#ffffff" opacity="0.8" />
+    <text y="13" font-family="monospace" font-size="8" fill="#dd5588" text-anchor="middle" font-weight="bold">Amoeba</text>
+  </g>
+
+  <!-- 3. Budding Yeast (Center-Right) -->
+  <g class="bacteria-body" transform="translate(520, 240)" style="animation-delay: 0.5s;">
+    <!-- Connection bridge -->
+    <line x1="-2" y1="-12" x2="9" y2="-17" stroke="#8a2be2" stroke-width="3" />
+    <!-- Parent cell -->
+    <circle cx="-2" cy="-12" r="10" fill="#8a2be2" stroke="#4b0082" stroke-width="2" />
+    <circle cx="-3" cy="-12" r="3" fill="#4b0082" opacity="0.6" />
+    <!-- Bud cell -->
+    <circle cx="9" cy="-17" r="6.5" fill="#8a2be2" stroke="#4b0082" stroke-width="1.5" />
+    <text y="13" font-family="monospace" font-size="8" fill="#a450ff" text-anchor="middle" font-weight="bold">Yeast Bud</text>
+  </g>
+
+  <!-- 4. Juggling Virus (Far Right) -->
+  <g transform="translate(710, 240)">
+    <!-- Tail fibers -->
+    <path d="M0,-8 L-8,0 M0,-8 L8,0 M0,-8 L-4,-3 L-5,0 M0,-8 L4,-3 L5,0" stroke="#1e3f66" stroke-width="1.5" />
+    <!-- Sheath -->
+    <line x1="0" y1="-18" x2="0" y2="-8" stroke="#1e3f66" stroke-width="2.5" />
+    <!-- Hexagonal capsid head -->
+    <polygon points="0,-30 -7,-24 -5,-18 5,-18 7,-24" fill="#4682b4" stroke="#1e3f66" stroke-width="1.5" />
+    
+    <!-- Rotating Capsid Spheres -->
+    <g class="virus-rotor">
+      <circle cx="0" cy="-28" r="2.5" fill="#ff4444" />
+      <circle cx="-9" cy="-14" r="2.5" fill="#44ff44" />
+      <circle cx="9" cy="-14" r="2.5" fill="#4444ff" />
+    </g>
+    <text y="13" font-family="monospace" font-size="8" fill="#4682b4" text-anchor="middle" font-weight="bold">Virus</text>
+  </g>
+
+  <!-- 5. Biofilm Germ with Shield (Middle) -->
+  <g class="bacteria-body" transform="translate(370, 240)" style="animation-delay: 0.8s;">
+    <!-- Main cell body -->
+    <circle cx="0" cy="-13" r="7" fill="#448844" stroke="#225522" stroke-width="2" />
+    <circle cx="-1" cy="-13" r="2" fill="#225522" opacity="0.6" />
+    <!-- Biofilm shield dome (glowing cyan circle) -->
+    <circle cx="0" cy="-13" r="15" fill="rgba(0, 170, 255, 0.12)" stroke="rgba(0, 170, 255, 0.75)" stroke-width="1.8" filter="url(#cyanGlow)" stroke-dasharray="3,3" />
+    <text y="13" font-family="monospace" font-size="8" fill="#44aa44" text-anchor="middle" font-weight="bold">Biofilm Germ</text>
+  </g>
+
+</svg>
