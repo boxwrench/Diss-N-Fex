@@ -120,6 +120,7 @@
         _epicMusicPlaying: false,
     };
     window.game = game;
+    if (typeof TouchControls !== 'undefined') TouchControls.setGame(game);
 
     // Give menu access to progression & achievements for stats/cosmetics display
     menu.progression = progression;
@@ -510,6 +511,18 @@
             if (Input.mouse.x === 0 && Input.mouse.y === 0) {
                 ozoneTargetX = rig.x;
                 ozoneTargetY = CFG.GROUND_Y;
+            }
+            // Touch: ignore the tap point (it is the on-screen button); aim at
+            // the nearest pathogen, else straight down from the rig.
+            if (Input.isTouch && Input.touch.ozone) {
+                var _ozPeds = pedManager.getAlive();
+                var _np = null, _nd = Infinity;
+                for (var _oi = 0; _oi < _ozPeds.length; _oi++) {
+                    var _od = Math.abs(_ozPeds[_oi].x - rig.x);
+                    if (_od < _nd) { _nd = _od; _np = _ozPeds[_oi]; }
+                }
+                if (_np) { ozoneTargetX = _np.x; ozoneTargetY = _np.y; }
+                else { ozoneTargetX = rig.x; ozoneTargetY = CFG.GROUND_Y; }
             }
             projectiles.spawnOzone(rig.x, rig.y + rig.height * 0.5, ozoneTargetX, ozoneTargetY);
             // Apply wind to ozone
@@ -1069,7 +1082,8 @@
 
         // ── Intermission player choice ─────────────────────────
         if (waves.state === 'intermission') {
-            if (Input.justPressed('Enter') || Input.justPressed('NumpadEnter')) {
+            if (Input.justPressed('Enter') || Input.justPressed('NumpadEnter') ||
+                (Input.isTouch && Input.mouse.down)) {
                 waves.startWave(pedManager);
                 treatmentObjectives.startCycle(waves.waveNumber);
                 game.treatmentReport = null;
@@ -1205,6 +1219,7 @@
 
             // HUD (screen space)
             HUD.draw(ctx, game);
+            if (typeof TouchControls !== 'undefined') TouchControls.draw(ctx, game);
 
             // Off-screen indicators for bosses and bounties
             var indicatorPeds = pedManager.getAlive();
