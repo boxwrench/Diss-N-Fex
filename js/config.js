@@ -26,7 +26,7 @@ const CFG = {
     CHLORINE: {
         METER_MAX: 100,
         DRAIN_RATE: 45,
-        REFILL_RATE: 10,
+        REFILL_RATE: 22,
         DPS: 5,
         DROP_SPEED: 600,
         CONE_WIDTH: 80,

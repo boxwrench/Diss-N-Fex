@@ -530,7 +530,7 @@ class OperatorRig {
             ctx.moveTo(16, -58);
             ctx.lineTo(5, -54);
             ctx.stroke();
-            ctx.fillStyle = '#ff1a1a';
+            ctx.fillStyle = '#19c3ff';
             ctx.beginPath();
             ctx.arc(-10, -55, 2.5, 0, Math.PI * 2);
             ctx.arc(10, -55, 2.5, 0, Math.PI * 2);
@@ -1178,7 +1178,7 @@ class OperatorRig {
 
     useRain(dt) {
         this.chlorineMeter = Math.max(0, this.chlorineMeter - CFG.CHLORINE.DRAIN_RATE * dt);
-        this._chlorineRefillDelay = 0.6;
+        this._chlorineRefillDelay = 0.35;
         this.isDosing = true;
     }
 
