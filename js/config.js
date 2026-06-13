@@ -88,8 +88,8 @@ const CFG = {
         CHARGE_TIME: 12,
         RADIUS: 350,
         DURATION: 6,
-        DAMAGE_MULT: 1.5,     // peds in fog take 1.5x damage
-        SLOW: 0.4,            // peds in fog move at 40%
+        DAMAGE_MULT: 1.5,     // peds in pH shock take 1.5x damage
+        SLOW: 0.4,            // peds in pH shock move at 40%
         POINTS_MULT: 1,
     },
 

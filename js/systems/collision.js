@@ -18,14 +18,14 @@ class CollisionSystem {
                py >= rect.y && py <= rect.y + rect.h;
     }
 
-    // -- Rain ------------------------------------------------------------
+    // -- Chlorine ------------------------------------------------------------
 
-    checkRain(raindrops, pedestrians, particles) {
+    checkChlorine(chlorineDroplets, pedestrians, particles) {
         var hits = [];
         var dmgPerDrop = CFG.CHLORINE.DPS / CFG.CHLORINE.DROPS_PER_SEC;
 
-        for (var i = raindrops.length - 1; i >= 0; i--) {
-            var drop    = raindrops[i];
+        for (var i = chlorineDroplets.length - 1; i >= 0; i--) {
+            var drop    = chlorineDroplets[i];
             var removed = false;
 
             // -- Pedestrian collision --
@@ -68,7 +68,7 @@ class CollisionSystem {
                         isBounty: !!ped._isBounty,
                         bountyPoints: ped._bountyPoints || 0,
                     });
-                    raindrops.splice(i, 1);
+                    chlorineDroplets.splice(i, 1);
                     removed = true;
                     break;
                 }
@@ -80,16 +80,16 @@ class CollisionSystem {
             if (drop.y >= CFG.GROUND_Y) {
                 particles.rainSplash(drop.x, CFG.GROUND_Y);
                 hits.push({ x: drop.x, y: CFG.GROUND_Y, hit: false, killed: false, points: 0, groundHit: true });
-                raindrops.splice(i, 1);
+                chlorineDroplets.splice(i, 1);
             }
         }
 
         return hits;
     }
 
-    // -- Hail ------------------------------------------------------------
+    // -- Ozone ------------------------------------------------------------
 
-    checkHail(ozoneProjectiles, pedestrians, particles) {
+    checkOzone(ozoneProjectiles, pedestrians, particles) {
         var hits = [];
 
         for (var i = ozoneProjectiles.length - 1; i >= 0; i--) {
@@ -118,7 +118,7 @@ class CollisionSystem {
                         particles.hailImpact(stone.x, stone.y);
                         hits.push({ x: ped.x, y: ped.y, hit: false, killed: false, points: 0 });
                     } else if (ped.type.shieldBlocksHail) {
-                        // Riot shield blocks hail from the front (based on facing)
+                        // Riot shield blocks ozone from the front (based on facing)
                         var hailFromFront = (stone.x - ped.x) * ped.dir > 0;
                         if (hailFromFront) {
                             particles.hailImpact(stone.x, stone.y);
@@ -127,7 +127,7 @@ class CollisionSystem {
                             removed = true;
                             break;
                         }
-                        // If from behind, hail hits normally - fall through to regular damage
+                        // If from behind, ozone hits normally - fall through to regular damage
                         var wasAttracted = (ped.state === 'attracted');
                         var wasFrozen = !!ped._frozen;
                         var result = ped.takeDamage(CFG.OZONE.DAMAGE, 'ozone');
@@ -189,9 +189,9 @@ class CollisionSystem {
         return hits;
     }
 
-    // -- Lightning -------------------------------------------------------
+    // -- UV -------------------------------------------------------
 
-    checkLightning(bolt, pedestrians, particles) {
+    checkUV(bolt, pedestrians, particles) {
         if (!bolt) return [];
 
         var killed  = [];
@@ -231,28 +231,28 @@ class CollisionSystem {
         return killed;
     }
 
-    // -- Tornado -----------------------------------------------------------
+    // -- Backwash -----------------------------------------------------------
 
-    checkTornadoes(tornadoes, pedestrians, particles) {
+    checkBackwashes(backwashes, pedestrians, particles) {
         var hits = [];
 
-        for (var t = 0; t < tornadoes.length; t++) {
-            var tornado = tornadoes[t];
-            if (tornado.hitTimer > 0) continue; // respect hit interval
+        for (var t = 0; t < backwashes.length; t++) {
+            var bw = backwashes[t];
+            if (bw.hitTimer > 0) continue; // respect hit interval
 
-            var halfW = tornado.width / 2;
+            var halfW = bw.width / 2;
 
             for (var p = 0; p < pedestrians.length; p++) {
                 var ped = pedestrians[p];
                 if (!ped.alive) continue;
 
-                var dx = Math.abs(ped.x - tornado.x);
+                var dx = Math.abs(ped.x - bw.x);
                 if (dx <= halfW) {
                     // Check per-ped cooldown
                     var pedId = p;
-                    var lastHit = tornado.hitPeds[pedId] || 0;
-                    if (tornado.maxLife - tornado.life - lastHit < CFG.BACKWASH.HIT_INTERVAL) continue;
-                    tornado.hitPeds[pedId] = tornado.maxLife - tornado.life;
+                    var lastHit = bw.hitPeds[pedId] || 0;
+                    if (bw.maxLife - bw.life - lastHit < CFG.BACKWASH.HIT_INTERVAL) continue;
+                    bw.hitPeds[pedId] = bw.maxLife - bw.life;
 
                     var wasAttracted = (ped.state === 'attracted');
                     var wasFrozen = !!ped._frozen;
@@ -260,7 +260,7 @@ class CollisionSystem {
                     if (result.hit) {
                         particles.hitEffect(ped.x, ped.y - 12);
                         // Fling ped sideways
-                        ped.x += tornado.dir * (30 + Math.random() * 20);
+                        ped.x += bw.dir * (30 + Math.random() * 20);
                     }
                     if (result.killed) {
                         particles.deathPoof(ped.x, ped.y - 12);
@@ -285,9 +285,9 @@ class CollisionSystem {
         return hits;
     }
 
-    // -- Frost ---------------------------------------------------------------
+    // -- Coagulant ---------------------------------------------------------------
 
-    checkFrost(cone, pedestrians, particles) {
+    checkCoagulant(cone, pedestrians, particles) {
         var hits = [];
         if (!cone) return hits;
 
@@ -319,18 +319,18 @@ class CollisionSystem {
         return hits;
     }
 
-    // -- Fog -----------------------------------------------------------------
+    // -- pH Shock -----------------------------------------------------------------
 
-    checkFog(fogZones, pedestrians) {
-        for (var f = 0; f < fogZones.length; f++) {
-            var fog = fogZones[f];
+    checkPH(phZones, pedestrians) {
+        for (var f = 0; f < phZones.length; f++) {
+            var zone = phZones[f];
 
             for (var p = 0; p < pedestrians.length; p++) {
                 var ped = pedestrians[p];
                 if (!ped.alive) continue;
 
-                var dx = Math.abs(ped.x - fog.x);
-                if (dx <= fog.radius) {
+                var dx = Math.abs(ped.x - zone.x);
+                if (dx <= zone.radius) {
                     ped._inFog = true;
                 }
             }
@@ -339,7 +339,7 @@ class CollisionSystem {
 
     // -- Projectiles vs Powerups -----------------------------------------
 
-    checkProjectilesVsPowerups(raindrops, ozoneProjectiles, bolts, powerups) {
+    checkProjectilesVsPowerups(chlorineDroplets, ozoneProjectiles, bolts, powerups) {
         var collected = [];
         var halfSize = CFG.POWERUP.SIZE / 2;
 
@@ -353,16 +353,16 @@ class CollisionSystem {
             };
             var hit = false;
 
-            // Rain
-            for (var r = raindrops.length - 1; r >= 0; r--) {
-                if (this.pointInRect(raindrops[r].x, raindrops[r].y, puBox)) {
-                    raindrops.splice(r, 1);
+            // Chlorine
+            for (var r = chlorineDroplets.length - 1; r >= 0; r--) {
+                if (this.pointInRect(chlorineDroplets[r].x, chlorineDroplets[r].y, puBox)) {
+                    chlorineDroplets.splice(r, 1);
                     hit = true;
                     break;
                 }
             }
 
-            // Hail
+            // Ozone
             if (!hit) {
                 for (var h = ozoneProjectiles.length - 1; h >= 0; h--) {
                     if (this.pointInRect(ozoneProjectiles[h].x, ozoneProjectiles[h].y, puBox)) {
@@ -373,7 +373,7 @@ class CollisionSystem {
                 }
             }
 
-            // Lightning AoE
+            // UV AoE
             if (!hit) {
                 for (var b = 0; b < bolts.length; b++) {
                     if (Math.abs(pu.x - bolts[b].x) <= CFG.UV_PULSE.AOE_RADIUS &&

@@ -86,7 +86,7 @@ class OperatorRig {
         }
         this.ozoneMeter = Math.min(CFG.OZONE.METER_MAX,
             this.ozoneMeter + CFG.OZONE.REFILL_RATE * rechargeMult * dt);
-        var ltngChargeMax = this._effectiveLightningCharge || CFG.UV_PULSE.CHARGE_TIME;
+        var ltngChargeMax = this._effectiveUVCharge || CFG.UV_PULSE.CHARGE_TIME;
         this.uvCharge = Math.min(ltngChargeMax,
             this.uvCharge + dt * rechargeMult);
         this.backwashCharge = Math.min(CFG.BACKWASH.CHARGE_TIME,
@@ -1190,7 +1190,7 @@ class OperatorRig {
     }
 
     canLightning() {
-        var chargeNeeded = this._effectiveLightningCharge || CFG.UV_PULSE.CHARGE_TIME;
+        var chargeNeeded = this._effectiveUVCharge || CFG.UV_PULSE.CHARGE_TIME;
         return this.uvCharge >= chargeNeeded;
     }
 

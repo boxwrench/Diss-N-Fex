@@ -33,7 +33,7 @@ class Progression {
         this.unlockedAttacks = { chlorine: true, ozone: false, uv: false, backwash: false, coagulant: false, ph: false };
         this.upgradeLevels   = this._defaultUpgradeLevels();
         this.treatmentPoints      = 0;
-        this.totalStormPoints = 0;
+        this.totalTreatmentPoints = 0;
         this.highestWave      = 0;
         this.totalKills       = 0;
         this.selectedCosmetic = 'none';
@@ -133,10 +133,10 @@ class Progression {
     /**
      * Convert a raw score into treatment points and bank them.
      */
-    addStormPoints(score) {
+    addTreatmentPoints(score) {
         var earned = Math.floor(score / 1000);
         this.treatmentPoints      += earned;
-        this.totalStormPoints += earned;
+        this.totalTreatmentPoints += earned;
     }
 
     // -- Effective Stats -------------------------------------------------
@@ -227,7 +227,7 @@ class Progression {
                 unlockedAttacks: this.unlockedAttacks,
                 upgradeLevels:   this.upgradeLevels,
                 treatmentPoints:     this.treatmentPoints,
-                totalStormPoints: this.totalStormPoints,
+                totalTreatmentPoints: this.totalTreatmentPoints,
                 highestWave:     this.highestWave,
                 totalKills:      this.totalKills,
                 selectedCosmetic: this.selectedCosmetic,
@@ -235,11 +235,12 @@ class Progression {
 
             // Include high score from the scoring system if available
             try {
-                var hs = localStorage.getItem('grumbulus_highscore');
+                var hs = localStorage.getItem('dissnfex_highscore') ||
+                         localStorage.getItem('grumbulus_highscore');
                 if (hs) data.highScore = parseInt(hs, 10) || 0;
             } catch (e) { /* ignore */ }
 
-            localStorage.setItem('grumbulus_save', JSON.stringify(data));
+            localStorage.setItem('dissnfex_save', JSON.stringify(data));
         } catch (e) {
             // localStorage may be unavailable
         }
@@ -247,7 +248,16 @@ class Progression {
 
     load() {
         try {
-            var raw = localStorage.getItem('grumbulus_save');
+            // One-time migration from the former save key.
+            var raw = localStorage.getItem('dissnfex_save');
+            if (!raw) {
+                var legacy = localStorage.getItem('grumbulus_save');
+                if (legacy) {
+                    localStorage.setItem('dissnfex_save', legacy);
+                    localStorage.removeItem('grumbulus_save');
+                    raw = legacy;
+                }
+            }
             if (!raw) return;
 
             var data = JSON.parse(raw);
@@ -277,8 +287,8 @@ class Progression {
             if (typeof data.treatmentPoints === 'number' && data.treatmentPoints >= 0) {
                 this.treatmentPoints = data.treatmentPoints;
             }
-            if (typeof data.totalStormPoints === 'number' && data.totalStormPoints >= 0) {
-                this.totalStormPoints = data.totalStormPoints;
+            if (typeof data.totalTreatmentPoints === 'number' && data.totalTreatmentPoints >= 0) {
+                this.totalTreatmentPoints = data.totalTreatmentPoints;
             }
             if (typeof data.highestWave === 'number' && data.highestWave >= 0) {
                 this.highestWave = data.highestWave;
@@ -296,6 +306,7 @@ class Progression {
 
     clearSave() {
         try {
+            localStorage.removeItem('dissnfex_save');
             localStorage.removeItem('grumbulus_save');
         } catch (e) { /* ignore */ }
 
@@ -303,7 +314,7 @@ class Progression {
         this.unlockedAttacks      = { chlorine: true, ozone: false, uv: false, backwash: false, coagulant: false, ph: false };
         this.upgradeLevels        = this._defaultUpgradeLevels();
         this.treatmentPoints          = 0;
-        this.totalStormPoints     = 0;
+        this.totalTreatmentPoints     = 0;
         this.highestWave          = 0;
         this.totalKills           = 0;
         this.selectedCosmetic     = 'none';

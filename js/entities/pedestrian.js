@@ -112,12 +112,12 @@ class Pedestrian {
             return { hit: false, killed: false, points: 0 };
         }
 
-        // Scientist shield blocks rain damage
+        // Scientist shield blocks chlorine damage
         if (this._shielded && type === 'chlorine') {
             return { hit: false, killed: false, points: 0 };
         }
 
-        // Rain resistance (acid rain bypasses all)
+        // Chlorine resistance (acid chlorine bypasses all)
         if (type === 'chlorine' && !this._acidRain) {
             if (this.hasBiofilmShield) {
                 return { hit: false, killed: false, points: 0 };
@@ -127,16 +127,16 @@ class Pedestrian {
             }
         }
 
-        // Construction worker hard hat resists hail
+        // Construction worker hard hat resists ozone
         if (type === 'ozone' && this.type.highHailResist) {
-            amount *= 0.4; // 60% hail damage reduction
+            amount *= 0.4; // 60% ozone damage reduction
         }
 
         // Track if they were lured/mesmerized
         var wasAttracted = (this.state === 'attracted');
         var wasMesmerized = !!this._mesmerized;
 
-        // Fog: peds take 1.5x damage
+        // pH Shock: peds take 1.5x damage
         if (this._inFog) {
             amount *= CFG.PH_SHOCK.DAMAGE_MULT;
         }
@@ -239,10 +239,10 @@ class Pedestrian {
         // Flash timer
         if (this.flashTimer > 0) this.flashTimer -= dt;
 
-        // Frozen state — can't act. Cold DPS only from frost, not aurora/iceage
+        // Frozen state — can't act. Cold DPS only from coagulant, not aurora/iceage
         if (this._frozenTimer > 0) {
             this._frozenTimer -= dt;
-            // Cold damage only if frozen by frost (not mesmerized by aurora)
+            // Cold damage only if frozen by coagulant (not mesmerized by aurora)
             if (this.alive && CFG.COAGULANT.FREEZE_DPS && !this._mesmerized) {
                 this.hp -= CFG.COAGULANT.FREEZE_DPS * dt;
                 if (this.hp <= 0) {
@@ -260,9 +260,9 @@ class Pedestrian {
             return; // can't do anything while frozen
         }
 
-        // Fog confusion
+        // pH Shock confusion
         if (this._inFog && (this.state === 'walk' || this.state === 'flee')) {
-            // Can't flee in fog — forced back to confused walking
+            // Can't flee in pH shock — forced back to confused walking
             if (this.state === 'flee') {
                 this.state = 'walk';
             }
@@ -271,7 +271,7 @@ class Pedestrian {
                 this.dir *= -1;
             }
         }
-        // Reset fog flag each frame (re-applied by collision check)
+        // Reset pH shock flag each frame (re-applied by collision check)
         this._inFog = false;
 
         switch (this.state) {

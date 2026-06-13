@@ -7,24 +7,27 @@ const SaveSystem = (function () {
     return {
         MAX_SLOTS: 4,
         activeSlot: 0,
-        SAVE_PREFIX: 'wtp_operator_run_',
-        LEGACY_SLOT_PREFIX: 'grumbulus_run_',
+        SAVE_PREFIX: 'dissnfex_run_',
+        // Older key prefixes we still migrate forward from, newest first.
+        LEGACY_SLOT_PREFIXES: ['wtp_operator_run_', 'grumbulus_run_'],
 
         slotKey: function (slot) {
             return this.SAVE_PREFIX + slot;
         },
 
-        legacySlotKey: function (slot) {
-            return this.LEGACY_SLOT_PREFIX + slot;
-        },
-
         readSlot: function (slot) {
             var raw = localStorage.getItem(this.slotKey(slot));
             if (!raw) {
-                raw = localStorage.getItem(this.legacySlotKey(slot));
-                if (raw) {
-                    localStorage.setItem(this.slotKey(slot), raw);
-                    localStorage.removeItem(this.legacySlotKey(slot));
+                // Pull forward from any older key prefix, then retire the old key.
+                for (var i = 0; i < this.LEGACY_SLOT_PREFIXES.length; i++) {
+                    var legacyKey = this.LEGACY_SLOT_PREFIXES[i] + slot;
+                    var legacyRaw = localStorage.getItem(legacyKey);
+                    if (legacyRaw) {
+                        raw = legacyRaw;
+                        localStorage.setItem(this.slotKey(slot), legacyRaw);
+                        localStorage.removeItem(legacyKey);
+                        break;
+                    }
                 }
             }
             return raw ? JSON.parse(raw) : null;
@@ -37,7 +40,7 @@ const SaveSystem = (function () {
                     score: game.scoring.score,
                     totalKills: game.scoring.totalKills,
                     bestCombo: game.scoring.bestCombo,
-                    cloudHp: game.rig.hp,
+                    rigHp: game.rig.hp,
                     treatmentPoints: game.progression.treatmentPoints,
                     upgradeLevels: game.progression.upgradeLevels,
                     timestamp: Date.now(),
@@ -57,7 +60,7 @@ const SaveSystem = (function () {
                 game.scoring.score = data.score || 0;
                 game.scoring.totalKills = data.totalKills || 0;
                 game.scoring.bestCombo = data.bestCombo || 0;
-                game.rig.hp = data.cloudHp || game.rig.maxHp;
+                game.rig.hp = data.rigHp || data.cloudHp || game.rig.maxHp;
 
                 // Restore per-slot SP and upgrades
                 if (typeof data.treatmentPoints === 'number') {
@@ -79,10 +82,16 @@ const SaveSystem = (function () {
             }
         },
 
+        _removeAllForSlot: function (slot) {
+            localStorage.removeItem(this.slotKey(slot));
+            for (var i = 0; i < this.LEGACY_SLOT_PREFIXES.length; i++) {
+                localStorage.removeItem(this.LEGACY_SLOT_PREFIXES[i] + slot);
+            }
+        },
+
         clearRunSave: function () {
             try {
-                localStorage.removeItem(this.slotKey(this.activeSlot));
-                localStorage.removeItem(this.legacySlotKey(this.activeSlot));
+                this._removeAllForSlot(this.activeSlot);
             } catch (e) {}
         },
 
@@ -96,20 +105,23 @@ const SaveSystem = (function () {
 
         deleteSlot: function (slot) {
             try {
-                localStorage.removeItem(this.slotKey(slot));
-                localStorage.removeItem(this.legacySlotKey(slot));
+                this._removeAllForSlot(slot);
             } catch (e) {}
         },
 
         migrateLegacySave: function () {
-            // Migrate legacy save keys into WTP operator slots.
+            // Pull any older-format save keys forward into the current slots,
+            // then retire the old keys. Covers every prior naming scheme.
             try {
                 for (var slot = 0; slot < this.MAX_SLOTS; slot++) {
-                    var oldSlot = localStorage.getItem(this.legacySlotKey(slot));
-                    if (oldSlot && !localStorage.getItem(this.slotKey(slot))) {
-                        localStorage.setItem(this.slotKey(slot), oldSlot);
+                    for (var i = 0; i < this.LEGACY_SLOT_PREFIXES.length; i++) {
+                        var oldKey = this.LEGACY_SLOT_PREFIXES[i] + slot;
+                        var oldSlot = localStorage.getItem(oldKey);
+                        if (oldSlot && !localStorage.getItem(this.slotKey(slot))) {
+                            localStorage.setItem(this.slotKey(slot), oldSlot);
+                        }
+                        if (oldSlot) localStorage.removeItem(oldKey);
                     }
-                    if (oldSlot) localStorage.removeItem(this.legacySlotKey(slot));
                 }
 
                 var oldSave = localStorage.getItem('grumbulus_run');

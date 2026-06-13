@@ -1,17 +1,17 @@
 // ── Projectile Manager ────────────────────────────────────────────
-// Handles rain, hail, and lightning bolt creation / movement / drawing.
+// Handles chlorine, ozone, and UV bolt creation / movement / drawing.
 // Depends on global CFG.
 
 class ProjectileManager {
     constructor() {
-        this.raindrops      = [];
+        this.chlorineDroplets      = [];
         this.ozoneProjectiles     = [];
-        this.lightningBolts = [];
-        this.tornadoes      = [];
-        this.frostCones     = [];
-        this.fogZones       = [];
+        this.uvBolts = [];
+        this.backwashes      = [];
+        this.coagulantCones     = [];
+        this.phZones       = [];
         this.enemyBullets   = [];  // visible bullets from military/bosses
-        this.flashAlpha    = 0;   // screen-flash for lightning
+        this.flashAlpha    = 0;   // screen-flash for UV
     }
 
     // ── Spawners ──────────────────────────────────────────────────
@@ -22,9 +22,9 @@ class ProjectileManager {
      * @param {number} y  rig bottom y
      * @param {number} coneWidth  horizontal spread
      */
-    spawnRain(x, y, coneWidth) {
+    spawnChlorine(x, y, coneWidth) {
         var half = (coneWidth || CFG.CHLORINE.CONE_WIDTH) / 2;
-        this.raindrops.push({
+        this.chlorineDroplets.push({
             x:  x + (Math.random() - 0.5) * half * 2,
             y:  y,
             vy: CFG.CHLORINE.DROP_SPEED,
@@ -36,7 +36,7 @@ class ProjectileManager {
     /**
      * Spawn a hailstone aimed at (targetX, targetY).
      */
-    spawnHail(x, y, targetX, targetY) {
+    spawnOzone(x, y, targetX, targetY) {
         var dx   = targetX - x;
         var dy   = targetY - y;
         var dist = Math.sqrt(dx * dx + dy * dy) || 1;
@@ -51,16 +51,16 @@ class ProjectileManager {
     }
 
     /**
-     * Spawn a lightning bolt from (x, y) down to CFG.GROUND_Y.
+     * Spawn a UV bolt from (x, y) down to CFG.GROUND_Y.
      * Returns the bolt object for AoE lookup.
      */
-    spawnLightning(x, y) {
+    spawnUV(x, y) {
         var bolt = this._generateBolt(x, y, CFG.GROUND_Y);
         bolt.life     = CFG.UV_PULSE.BOLT_DURATION;
         bolt.maxLife  = CFG.UV_PULSE.BOLT_DURATION;
         bolt.x        = x;                       // centre x for AoE
         bolt.groundY  = CFG.GROUND_Y;
-        this.lightningBolts.push(bolt);
+        this.uvBolts.push(bolt);
 
         // trigger screen flash
         this.flashAlpha = 0.6;
@@ -68,10 +68,10 @@ class ProjectileManager {
     }
 
     /**
-     * Spawn a tornado at ground level moving in dir (1=right, -1=left).
+     * Spawn a bw at ground level moving in dir (1=right, -1=left).
      */
-    spawnTornado(x, dir) {
-        var tornado = {
+    spawnBackwash(x, dir) {
+        var bw = {
             x: x,
             y: CFG.GROUND_Y,
             dir: dir,
@@ -84,34 +84,34 @@ class ProjectileManager {
             rotation: 0,
             hitPeds: {}, // track last hit time per ped to avoid constant damage
         };
-        this.tornadoes.push(tornado);
-        return tornado;
+        this.backwashes.push(bw);
+        return bw;
     }
 
     /**
-     * Spawn a frost cone from (x,y) in given direction.
+     * Spawn a coagulant cone from (x,y) in given direction.
      */
-    spawnFrost(x, y, dir) {
+    spawnCoagulant(x, y, dir) {
         var cone = {
             x: x, y: y, dir: dir,
             life: 1.2, maxLife: 1.2,
             width: CFG.COAGULANT.CONE_WIDTH,
             length: CFG.COAGULANT.CONE_LENGTH,
         };
-        this.frostCones.push(cone);
+        this.coagulantCones.push(cone);
         return cone;
     }
 
     /**
-     * Spawn a fog zone at ground level.
+     * Spawn a pH shock zone at ground level.
      */
-    spawnFog(x, groundY) {
+    spawnPH(x, groundY) {
         var zone = {
             x: x, y: groundY,
             radius: CFG.PH_SHOCK.RADIUS,
             life: CFG.PH_SHOCK.DURATION, maxLife: CFG.PH_SHOCK.DURATION,
         };
-        this.fogZones.push(zone);
+        this.phZones.push(zone);
         return zone;
     }
 
@@ -192,16 +192,16 @@ class ProjectileManager {
     update(dt) {
         var i;
 
-        // Rain
-        for (i = this.raindrops.length - 1; i >= 0; i--) {
-            var r = this.raindrops[i];
+        // Chlorine
+        for (i = this.chlorineDroplets.length - 1; i >= 0; i--) {
+            var r = this.chlorineDroplets[i];
             r.y += r.vy * dt;
             if (r.y > CFG.GROUND_Y + 20) {
-                this.raindrops.splice(i, 1);
+                this.chlorineDroplets.splice(i, 1);
             }
         }
 
-        // Hail
+        // Ozone
         for (i = this.ozoneProjectiles.length - 1; i >= 0; i--) {
             var h = this.ozoneProjectiles[i];
             h.vy += CFG.OZONE.GRAVITY * dt;
@@ -212,24 +212,24 @@ class ProjectileManager {
             }
         }
 
-        // Lightning
-        for (i = this.lightningBolts.length - 1; i >= 0; i--) {
-            var bolt = this.lightningBolts[i];
+        // UV
+        for (i = this.uvBolts.length - 1; i >= 0; i--) {
+            var bolt = this.uvBolts[i];
             bolt.life -= dt;
             if (bolt.life <= 0) {
-                this.lightningBolts.splice(i, 1);
+                this.uvBolts.splice(i, 1);
             }
         }
 
-        // Tornadoes
-        for (i = this.tornadoes.length - 1; i >= 0; i--) {
-            var t = this.tornadoes[i];
+        // Backwashes
+        for (i = this.backwashes.length - 1; i >= 0; i--) {
+            var t = this.backwashes[i];
             t.x += t.dir * t.speed * dt;
             t.life -= dt;
             t.rotation += dt * 12;
             t.hitTimer -= dt;
             if (t.life <= 0 || t.x < -100 || t.x > CFG.CITY.WORLD_WIDTH + 100) {
-                this.tornadoes.splice(i, 1);
+                this.backwashes.splice(i, 1);
             }
         }
 
@@ -251,15 +251,15 @@ class ProjectileManager {
             }
         }
 
-        // Frost cones
-        for (i = this.frostCones.length - 1; i >= 0; i--) {
-            this.frostCones[i].life -= dt;
-            if (this.frostCones[i].life <= 0) this.frostCones.splice(i, 1);
+        // Coagulant cones
+        for (i = this.coagulantCones.length - 1; i >= 0; i--) {
+            this.coagulantCones[i].life -= dt;
+            if (this.coagulantCones[i].life <= 0) this.coagulantCones.splice(i, 1);
         }
-        // Fog zones
-        for (i = this.fogZones.length - 1; i >= 0; i--) {
-            this.fogZones[i].life -= dt;
-            if (this.fogZones[i].life <= 0) this.fogZones.splice(i, 1);
+        // pH Shock zones
+        for (i = this.phZones.length - 1; i >= 0; i--) {
+            this.phZones[i].life -= dt;
+            if (this.phZones[i].life <= 0) this.phZones.splice(i, 1);
         }
 
         // Screen flash decay
@@ -272,29 +272,29 @@ class ProjectileManager {
     // ── Draw ──────────────────────────────────────────────────────
 
     draw(ctx) {
-        this._drawRain(ctx);
-        this._drawHail(ctx);
-        this._drawLightning(ctx);
-        this._drawTornadoes(ctx);
-        this._drawFrost(ctx);
-        this._drawFog(ctx);
+        this._drawChlorine(ctx);
+        this._drawOzone(ctx);
+        this._drawUV(ctx);
+        this._drawBackwashes(ctx);
+        this._drawCoagulant(ctx);
+        this._drawPH(ctx);
         this._drawEnemyBullets(ctx);
         this._drawFlash(ctx);
     }
 
-    _drawRain(ctx) {
+    _drawChlorine(ctx) {
         ctx.strokeStyle = '#ccff33';
         ctx.lineWidth   = 2;
         ctx.beginPath();
-        for (var i = 0; i < this.raindrops.length; i++) {
-            var r = this.raindrops[i];
+        for (var i = 0; i < this.chlorineDroplets.length; i++) {
+            var r = this.chlorineDroplets[i];
             ctx.moveTo(r.x, r.y);
             ctx.lineTo(r.x, r.y + r.h);
         }
         ctx.stroke();
     }
 
-    _drawHail(ctx) {
+    _drawOzone(ctx) {
         for (var i = 0; i < this.ozoneProjectiles.length; i++) {
             var h = this.ozoneProjectiles[i];
             ctx.fillStyle   = 'rgba(0, 230, 255, 0.25)'; // cyan ozone bubbles
@@ -312,9 +312,9 @@ class ProjectileManager {
         }
     }
 
-    _drawLightning(ctx) {
-        for (var i = 0; i < this.lightningBolts.length; i++) {
-            var bolt  = this.lightningBolts[i];
+    _drawUV(ctx) {
+        for (var i = 0; i < this.uvBolts.length; i++) {
+            var bolt  = this.uvBolts[i];
             var alpha = Math.min(1, bolt.life / bolt.maxLife * 2); // fade in last half
 
             // glow (purple UV plasma glow)
@@ -345,9 +345,9 @@ class ProjectileManager {
         ctx.stroke();
     }
 
-    _drawTornadoes(ctx) {
-        for (var i = 0; i < this.tornadoes.length; i++) {
-            var t = this.tornadoes[i];
+    _drawBackwashes(ctx) {
+        for (var i = 0; i < this.backwashes.length; i++) {
+            var t = this.backwashes[i];
             var fade = Math.min(1, t.life / 0.5); // fade in last 0.5s
 
             ctx.save();
@@ -411,9 +411,9 @@ class ProjectileManager {
         }
     }
 
-    _drawFrost(ctx) {
-        for (var i = 0; i < this.frostCones.length; i++) {
-            var c = this.frostCones[i];
+    _drawCoagulant(ctx) {
+        for (var i = 0; i < this.coagulantCones.length; i++) {
+            var c = this.coagulantCones[i];
             var alpha = Math.min(1, c.life / c.maxLife * 2);
 
             ctx.save();
@@ -458,16 +458,16 @@ class ProjectileManager {
         }
     }
 
-    _drawFog(ctx) {
-        for (var i = 0; i < this.fogZones.length; i++) {
-            var f = this.fogZones[i];
+    _drawPH(ctx) {
+        for (var i = 0; i < this.phZones.length; i++) {
+            var f = this.phZones[i];
             var remaining = f.life;
             var alpha = remaining < 1.0 ? remaining : 1.0; // fade in last 1s of life
 
             ctx.save();
             ctx.translate(f.x, f.y);
 
-            // Multiple overlapping semi-transparent ellipses for fog bank
+            // Multiple overlapping semi-transparent ellipses for pH shock bank
             var layers = 8;
             for (var l = 0; l < layers; l++) {
                 var drift = Math.sin(performance.now() * 0.001 + l * 1.7) * 12;

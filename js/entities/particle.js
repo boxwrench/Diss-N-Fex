@@ -85,7 +85,7 @@ class ParticleSystem {
         });
     }
 
-    /** White particles on hail impact, wider spread. */
+    /** White particles on ozone impact, wider spread. */
     hailImpact(x, y) {
         this.emit(x, y, {
             count:     5 + Math.floor(Math.random() * 4),  // 5-8

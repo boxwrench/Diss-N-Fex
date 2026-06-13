@@ -188,13 +188,22 @@ AchievementSystem.prototype.resetRun = function () {
 
 AchievementSystem.prototype.save = function () {
     try {
-        localStorage.setItem('grumbulus_achievements', JSON.stringify(this.unlocked));
+        localStorage.setItem('dissnfex_achievements', JSON.stringify(this.unlocked));
     } catch (e) { /* storage full or unavailable */ }
 };
 
 AchievementSystem.prototype.load = function () {
     try {
-        var data = localStorage.getItem('grumbulus_achievements');
+        var data = localStorage.getItem('dissnfex_achievements');
+        if (data === null) {
+            // One-time migration from the former achievements key.
+            var legacy = localStorage.getItem('grumbulus_achievements');
+            if (legacy !== null) {
+                localStorage.setItem('dissnfex_achievements', legacy);
+                localStorage.removeItem('grumbulus_achievements');
+                data = legacy;
+            }
+        }
         if (data) this.unlocked = JSON.parse(data);
     } catch (e) {
         this.unlocked = {};

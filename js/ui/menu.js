@@ -505,7 +505,7 @@ class MenuSystem {
             this._shadowText(ctx, 'LIFETIME', cx + 200, rowY, '#8888aa', 'bold 11px "Courier New", monospace', 'center');
             this._shadowText(ctx, 'Highest Cycle: ' + prog.highestWave, cx + 200, rowY + 16, '#aaaacc', '11px "Courier New", monospace', 'center');
             this._shadowText(ctx, 'Total Sanitized: ' + prog.totalKills, cx + 200, rowY + 30, '#aaaacc', '11px "Courier New", monospace', 'center');
-            this._shadowText(ctx, 'TP Earned: ' + prog.totalStormPoints, cx + 200, rowY + 44, '#aaaacc', '11px "Courier New", monospace', 'center');
+            this._shadowText(ctx, 'TP Earned: ' + prog.totalTreatmentPoints, cx + 200, rowY + 44, '#aaaacc', '11px "Courier New", monospace', 'center');
         }
         if (ach) {
             var achProg = ach.getProgress();
@@ -942,7 +942,7 @@ class MenuSystem {
         };
 
         // Split upgrades into two columns:
-        // Left: rain, hail, general   Right: lightning, tornado
+        // Left: chlorine, ozone, general   Right: UV, backwash
         var leftKeys  = [];
         var rightKeys = [];
         var allKeys   = UPGRADES ? Object.keys(UPGRADES) : [];

@@ -4,7 +4,7 @@
 
 var POWERUP_TYPES = [
     { name: 'Chlorine Residual', color: '#0066ff', effect: 'chlorineBoost',      duration: 10, minWave: 1,
-      drawIcon: function(ctx, r) { // 3 rain drops
+      drawIcon: function(ctx, r) { // 3 chlorine drops
         ctx.strokeStyle = '#88bbff'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.moveTo(-3,-r*0.5); ctx.lineTo(-3,r*0.3); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(3,-r*0.3);  ctx.lineTo(3,r*0.5);  ctx.stroke();
@@ -340,15 +340,15 @@ class PowerUpSystem {
 
         switch (eff.effect) {
             case 'chlorineBoost':
-                // Unlimited rain — keep meter full while active
+                // Unlimited chlorine — keep meter full while active
                 if (rig.chlorineMeter != null) {
                     rig.chlorineMeter = CFG.CHLORINE.METER_MAX;
                 }
                 break;
 
             case 'chainLightning':
-                // Unlimited lightning — instant recharge after each strike
-                var chargeMax = rig._effectiveLightningCharge || CFG.UV_PULSE.CHARGE_TIME;
+                // Unlimited UV — instant recharge after each strike
+                var chargeMax = rig._effectiveUVCharge || CFG.UV_PULSE.CHARGE_TIME;
                 rig.uvCharge = chargeMax;
                 break;
 
@@ -364,7 +364,7 @@ class PowerUpSystem {
                 break;
 
             case 'breakpointChlorine':
-                // Rain ignores resistance and melts umbrellas (handled by main.js checking hasEffect)
+                // Chlorine ignores resistance and melts umbrellas (handled by main.js checking hasEffect)
                 break;
 
             case 'blizzard':

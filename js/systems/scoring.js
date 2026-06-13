@@ -88,7 +88,7 @@ class ScoringSystem {
 
         var actual = this.addHit(points, x, y, textPopups);
 
-        // Chain-lightning bonus: three or more kills in quick succession
+        // Chain-UV bonus: three or more kills in quick succession
         if (type === 'uv' && this.combo >= 3) {
             var bonus = 50 * this.combo;
             this.score     += bonus;
@@ -156,7 +156,7 @@ class ScoringSystem {
 
     saveHighScore() {
         try {
-            localStorage.setItem('grumbulus_highscore', String(this.highScore));
+            localStorage.setItem('dissnfex_highscore', String(this.highScore));
         } catch (e) {
             // storage may be unavailable in some contexts
         }
@@ -164,7 +164,16 @@ class ScoringSystem {
 
     loadHighScore() {
         try {
-            var stored = localStorage.getItem('grumbulus_highscore');
+            var stored = localStorage.getItem('dissnfex_highscore');
+            if (stored === null) {
+                // One-time migration from the former high-score key.
+                var legacy = localStorage.getItem('grumbulus_highscore');
+                if (legacy !== null) {
+                    localStorage.setItem('dissnfex_highscore', legacy);
+                    localStorage.removeItem('grumbulus_highscore');
+                    stored = legacy;
+                }
+            }
             return stored ? parseInt(stored, 10) || 0 : 0;
         } catch (e) {
             return 0;

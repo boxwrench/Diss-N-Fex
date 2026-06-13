@@ -92,12 +92,12 @@
     ];
 
     var MULTI_KILL_FLAVOR = {
-        rain:      ['DISINFECT!', 'CHLORINATED!', 'PURGED!', 'STERILIZED!'],
-        hail:      ['OZONE BLAST!', 'OXIDIZED!', 'OXYGENATED!', 'DISINTEGRATE!'],
-        lightning: ['UV SMITE!', 'IRRADIATED!', 'DNA SHATTER!', 'STERILIZED!'],
-        tornado:   ['VORTEX FLUSH!', 'CENTRIFUGED!', 'WHIRLPOOL!', 'DRAINED!'],
-        frost:     ['CLUMPED!', 'COAGULATED!', 'FLOCCULATED!', 'PRECIPITATED!'],
-        fog:       ['pH SHOCK!', 'ACIDIFIED!', 'CORRODED!', 'BUFFER BREAK!'],
+        chlorine:  ['DISINFECT!', 'CHLORINATED!', 'PURGED!', 'STERILIZED!'],
+        ozone:     ['OZONE BLAST!', 'OXIDIZED!', 'OXYGENATED!', 'DISINTEGRATE!'],
+        uv:        ['UV SMITE!', 'IRRADIATED!', 'DNA SHATTER!', 'STERILIZED!'],
+        backwash:  ['VORTEX FLUSH!', 'CENTRIFUGED!', 'WHIRLPOOL!', 'DRAINED!'],
+        coagulant: ['CLUMPED!', 'COAGULATED!', 'FLOCCULATED!', 'PRECIPITATED!'],
+        ph:        ['pH SHOCK!', 'ACIDIFIED!', 'CORRODED!', 'BUFFER BREAK!'],
     };
 
     // Pack references for HUD and external systems
@@ -149,12 +149,12 @@
         ensureAudio();
         rig = new OperatorRig();
         pedManager.clear();
-        projectiles.raindrops.length = 0;
+        projectiles.chlorineDroplets.length = 0;
         projectiles.ozoneProjectiles.length = 0;
-        projectiles.lightningBolts.length = 0;
-        projectiles.tornadoes.length = 0;
-        projectiles.frostCones.length = 0;
-        projectiles.fogZones.length = 0;
+        projectiles.uvBolts.length = 0;
+        projectiles.backwashes.length = 0;
+        projectiles.coagulantCones.length = 0;
+        projectiles.phZones.length = 0;
         projectiles.enemyBullets.length = 0;
         particles.particles.length = 0;
         scoring.reset();
@@ -194,7 +194,7 @@
         achievements.resetRun();
 
         // Reset per-run state (SP, upgrades, attack unlocks)
-        progression.unlockedAttacks = { rain: false, hail: false, lightning: false, tornado: false, frost: false, fog: false };
+        progression.unlockedAttacks = { chlorine: false, ozone: false, uv: false, backwash: false, coagulant: false, ph: false };
         progression.treatmentPoints = 0;
         progression.upgradeLevels = progression._defaultUpgradeLevels();
         progression.checkWaveUnlocks(1);
@@ -218,7 +218,7 @@
             isNewHigh:  wasNewHigh,
         });
         progression.updateStats(waves.waveNumber, scoring.totalKills);
-        progression.addStormPoints(scoring.score);
+        progression.addTreatmentPoints(scoring.score);
         progression.save();
         SaveSystem.saveRun(game); // preserve progress — player can continue from this wave
         Music.stop();
@@ -424,21 +424,21 @@
         gameTime += dt;
 
         // Effective stats from upgrades
-        var effCloudSpeed = progression.getEffective('rigSpeed');
-        var effRainDPS = progression.getEffective('chlorineDPS');
-        var effRainCone = progression.getEffective('chlorineConeWidth');
-        var effHailDmg = progression.getEffective('ozoneDamage');
-        var effLightningAoE = progression.getEffective('uvAoE');
-        var effLightningCharge = progression.getEffective('uvChargeTime');
-        var effTornadoDur = progression.getEffective('backwashDuration');
-        var effTornadoW = progression.getEffective('backwashWidth');
+        var effRigSpeed = progression.getEffective('rigSpeed');
+        var effChlorineDPS = progression.getEffective('chlorineDPS');
+        var effChlorineCone = progression.getEffective('chlorineConeWidth');
+        var effOzoneDmg = progression.getEffective('ozoneDamage');
+        var effUVAoE = progression.getEffective('uvAoE');
+        var effUVCharge = progression.getEffective('uvChargeTime');
+        var effBackwashDur = progression.getEffective('backwashDuration');
+        var effBackwashW = progression.getEffective('backwashWidth');
         var effRecharge = progression.getEffective('meterRechargeMultiplier');
         var effComboWindow = progression.getEffective('comboWindow');
 
         // Apply effective stats to rig for this frame
-        rig._effectiveSpeed = effCloudSpeed;
+        rig._effectiveSpeed = effRigSpeed;
         rig._effectiveRecharge = effRecharge;
-        rig._effectiveLightningCharge = effLightningCharge;
+        rig._effectiveUVCharge = effUVCharge;
 
         // Day/night cycle
         // Day/night cycle: oscillates 0 (noon) to 0.5 (midnight)
@@ -470,7 +470,7 @@
 
         // ── Attacks ─────────────────────────────────────────────
 
-        // Rain (always available from wave 1)
+        // Chlorine (always available from wave 1)
         var stormSurgeCount = powerups.countEffect('chlorineBoost');
         var hasStormSurge = stormSurgeCount > 0;
         if (progression.hasAttack('chlorine') && Input.wantsChlorine() && (rig.canRain() || hasStormSurge)) {
@@ -479,10 +479,10 @@
             rig.addAnger(0.3 * dt);
             achievements.trackAttack('chlorine');
             // Stacked Storm Surge = more drops (multiplicative)
-            var rainMult = hasStormSurge ? stormSurgeCount + 1 : 1;
-            rainSpawnAcc += CFG.CHLORINE.DROPS_PER_SEC * rainMult * dt;
+            var chlorineMult = hasStormSurge ? stormSurgeCount + 1 : 1;
+            rainSpawnAcc += CFG.CHLORINE.DROPS_PER_SEC * chlorineMult * dt;
             while (rainSpawnAcc >= 1) {
-                projectiles.spawnRain(rig.x, rig.y + rig.height * 0.6, effRainCone * (rig.width / rig.baseWidth));
+                projectiles.spawnChlorine(rig.x, rig.y + rig.height * 0.6, effChlorineCone * (rig.width / rig.baseWidth));
                 rainSpawnAcc -= 1;
             }
             if (!SFX._rainPlaying) {
@@ -498,21 +498,21 @@
             }
         }
 
-        // Hail (unlocks wave 3)
+        // Ozone (unlocks wave 3)
         var hasHailStorm = powerups.hasEffect('ozoneAuto');
         hailCooldown -= dt;
         if (progression.hasAttack('ozone') && Input.wantsOzone() && (rig.canHail() || hasHailStorm) && hailCooldown <= 0) {
             if (!hasHailStorm) rig.useHail();
             rig.addAnger(0.5);
             achievements.trackAttack('ozone');
-            var hailTargetX = camera.worldX(Input.mouse.x);
-            var hailTargetY = camera.worldY(Input.mouse.y);
+            var ozoneTargetX = camera.worldX(Input.mouse.x);
+            var ozoneTargetY = camera.worldY(Input.mouse.y);
             if (Input.mouse.x === 0 && Input.mouse.y === 0) {
-                hailTargetX = rig.x;
-                hailTargetY = CFG.GROUND_Y;
+                ozoneTargetX = rig.x;
+                ozoneTargetY = CFG.GROUND_Y;
             }
-            projectiles.spawnHail(rig.x, rig.y + rig.height * 0.5, hailTargetX, hailTargetY);
-            // Apply wind to hail
+            projectiles.spawnOzone(rig.x, rig.y + rig.height * 0.5, ozoneTargetX, ozoneTargetY);
+            // Apply wind to ozone
             if (windSpeed !== 0) {
                 var lastHail = projectiles.ozoneProjectiles[projectiles.ozoneProjectiles.length - 1];
                 if (lastHail) lastHail.vx += windSpeed;
@@ -521,18 +521,18 @@
             hailCooldown = 0.15;
         }
 
-        // Lightning (unlocks wave 6)
+        // UV (unlocks wave 6)
         if (progression.hasAttack('uv') && Input.wantsUV() && rig.canLightning()) {
             rig.useLightning();
             rig.addAnger(3);
             achievements.trackAttack('uv');
             if (powerups.hasEffect('chainLightning')) achievements.trackUVOverdrivePulse();
-            var bolt = projectiles.spawnLightning(rig.x, rig.y + rig.height * 0.5);
+            var bolt = projectiles.spawnUV(rig.x, rig.y + rig.height * 0.5);
             camera.shake();
             SFX.playUVPulse();
             basinEffects.addScorch(bolt.x, CFG.GROUND_Y);
 
-            // Lightning damages nearest building (cosmetic)
+            // UV damages nearest building (cosmetic)
             var ltngBuildings = city.layers[2];
             for (var lbi = 0; lbi < ltngBuildings.length; lbi++) {
                 var lb = ltngBuildings[lbi];
@@ -544,13 +544,13 @@
 
             // AoE damage with upgraded radius
             var origAoE = CFG.UV_PULSE.AOE_RADIUS;
-            CFG.UV_PULSE.AOE_RADIUS = effLightningAoE;
-            var lightningHits = collision.checkLightning(bolt, pedManager.getAlive(), particles);
+            CFG.UV_PULSE.AOE_RADIUS = effUVAoE;
+            var uvHits = collision.checkUV(bolt, pedManager.getAlive(), particles);
             CFG.UV_PULSE.AOE_RADIUS = origAoE;
 
-            achievements.trackUVKills(lightningHits.length);
-            for (var i = 0; i < lightningHits.length; i++) {
-                var lh = lightningHits[i];
+            achievements.trackUVKills(uvHits.length);
+            for (var i = 0; i < uvHits.length; i++) {
+                var lh = uvHits[i];
                 scoring.addKill(Math.floor(lh.points * CFG.UV_PULSE.POINTS_MULT * damageMult), lh.x, lh.y, 'uv', textPopups);
                 multiKillCount++;
                 multiKillTimer = 0.5;
@@ -571,50 +571,50 @@
                     camera.shake(5, 0.3);
                 }
             }
-            // Expression: evil grin after lightning kills
-            if (lightningHits.length > 0) rig.setExpression('evil', 1.5);
+            // Expression: evil grin after UV kills
+            if (uvHits.length > 0) rig.setExpression('evil', 1.5);
         }
 
-        // Tornado (unlocks wave 10)
+        // Backwash (unlocks wave 10)
         if (progression.hasAttack('backwash') && Input.wantsBackwash() && rig.canTornado()) {
             rig.useTornado();
             rig.addAnger(2);
             achievements.trackAttack('backwash');
-            var tornadoDir = rig.vx >= 0 ? 1 : -1;
-            var tornado = projectiles.spawnTornado(rig.x, tornadoDir);
-            // Apply upgrade to tornado stats
-            tornado.life = effTornadoDur;
-            tornado.maxLife = effTornadoDur;
-            tornado.width = effTornadoW;
+            var backwashDir = rig.vx >= 0 ? 1 : -1;
+            var backwash = projectiles.spawnBackwash(rig.x, backwashDir);
+            // Apply upgrade to backwash stats
+            backwash.life = effBackwashDur;
+            backwash.maxLife = effBackwashDur;
+            backwash.width = effBackwashW;
             camera.shake(6, 0.3);
             SFX.playOzoneThrow();
         }
 
-        // Frost (unlocks wave 8)
+        // Coagulant (unlocks wave 8)
         if (progression.hasAttack('coagulant') && Input.wantsCoagulant() && rig.canFrost()) {
             rig.useFrost();
             rig.addAnger(1);
             achievements.trackAttack('coagulant');
-            var frostDir = rig.vx >= 0 ? 1 : -1;
-            var cone = projectiles.spawnFrost(rig.x, rig.y + rig.height * 0.5, frostDir);
+            var coagulantDir = rig.vx >= 0 ? 1 : -1;
+            var cone = projectiles.spawnCoagulant(rig.x, rig.y + rig.height * 0.5, coagulantDir);
             // Extend cone to reach the ground
             cone.length = CFG.GROUND_Y - rig.y;
             var effFreezeDur = progression.getEffective('coagulantDuration');
             var origFreeze = CFG.COAGULANT.FREEZE_DURATION;
             CFG.COAGULANT.FREEZE_DURATION = effFreezeDur;
-            collision.checkFrost(cone, pedManager.getAlive(), particles);
+            collision.checkCoagulant(cone, pedManager.getAlive(), particles);
             CFG.COAGULANT.FREEZE_DURATION = origFreeze;
             SFX.playOzoneThrow();
         }
 
-        // Fog (unlocks wave 12)
+        // pH Shock (unlocks wave 12)
         if (progression.hasAttack('ph') && Input.wantsPH() && rig.canFog()) {
             rig.useFog();
             rig.addAnger(0.5);
             achievements.trackAttack('ph');
-            var effFogRadius = progression.getEffective('phRadius');
-            var fogZone = projectiles.spawnFog(rig.x, CFG.GROUND_Y);
-            fogZone.radius = effFogRadius;
+            var effPHRadius = progression.getEffective('phRadius');
+            var phZone = projectiles.spawnPH(rig.x, CFG.GROUND_Y);
+            phZone.radius = effPHRadius;
         }
 
         // ── Projectiles ─────────────────────────────────────────
@@ -637,20 +637,20 @@
             }
         }
 
-        // ── Fog status effect ───────────────────────────────────
-        collision.checkFog(projectiles.fogZones, pedManager.getAlive());
+        // ── pH Shock status effect ───────────────────────────────────
+        collision.checkPH(projectiles.phZones, pedManager.getAlive());
 
         // ── Collisions ──────────────────────────────────────────
         var alivePeds = pedManager.getAlive();
 
-        // Rain collisions (use effective DPS)
+        // Chlorine collisions (use effective DPS)
         var origRainDPS = CFG.CHLORINE.DPS;
-        CFG.CHLORINE.DPS = effRainDPS;
-        var rainHits = collision.checkRain(projectiles.raindrops, alivePeds, particles);
+        CFG.CHLORINE.DPS = effChlorineDPS;
+        var chlorineHits = collision.checkChlorine(projectiles.chlorineDroplets, alivePeds, particles);
         CFG.CHLORINE.DPS = origRainDPS;
 
-        for (var i = 0; i < rainHits.length; i++) {
-            var rh = rainHits[i];
+        for (var i = 0; i < chlorineHits.length; i++) {
+            var rh = chlorineHits[i];
             if (rh.killed) {
                 scoring.addKill(Math.floor(rh.points * CFG.CHLORINE.POINTS_MULT * damageMult), rh.x, rh.y, 'chlorine', textPopups);
                 multiKillCount++;
@@ -676,14 +676,14 @@
             }
         }
 
-        // Hail collisions (use effective damage)
+        // Ozone collisions (use effective damage)
         var origHailDmg = CFG.OZONE.DAMAGE;
-        CFG.OZONE.DAMAGE = effHailDmg;
-        var hailHits = collision.checkHail(projectiles.ozoneProjectiles, alivePeds, particles);
+        CFG.OZONE.DAMAGE = effOzoneDmg;
+        var ozoneHits = collision.checkOzone(projectiles.ozoneProjectiles, alivePeds, particles);
         CFG.OZONE.DAMAGE = origHailDmg;
 
-        for (var i = 0; i < hailHits.length; i++) {
-            var hh = hailHits[i];
+        for (var i = 0; i < ozoneHits.length; i++) {
+            var hh = ozoneHits[i];
             if (hh.killed) {
                 scoring.addKill(Math.floor(hh.points * CFG.OZONE.POINTS_MULT * damageMult), hh.x, hh.y, 'ozone', textPopups);
                 multiKillCount++;
@@ -706,10 +706,10 @@
             }
         }
 
-        // Tornado collisions
-        var tornadoHits = collision.checkTornadoes(projectiles.tornadoes, alivePeds, particles);
-        for (var i = 0; i < tornadoHits.length; i++) {
-            var th = tornadoHits[i];
+        // Backwash collisions
+        var backwashHits = collision.checkBackwashes(projectiles.backwashes, alivePeds, particles);
+        for (var i = 0; i < backwashHits.length; i++) {
+            var th = backwashHits[i];
             if (th.killed) {
                 scoring.addKill(Math.floor(th.points * CFG.BACKWASH.POINTS_MULT * damageMult), th.x, th.y, 'backwash', textPopups);
                 multiKillCount++;
@@ -731,11 +731,11 @@
                 NotificationSystem.showComplaint(th.x, th.y, th.complaint, textPopups);
             }
         }
-        achievements.trackTornadoHits(tornadoHits.length);
+        achievements.trackTornadoHits(backwashHits.length);
 
-        // Tornado damages nearby buildings (cosmetic)
-        for (var tdi = 0; tdi < projectiles.tornadoes.length; tdi++) {
-            var torn = projectiles.tornadoes[tdi];
+        // Backwash damages nearby buildings (cosmetic)
+        for (var tdi = 0; tdi < projectiles.backwashes.length; tdi++) {
+            var torn = projectiles.backwashes[tdi];
             var tornBuildings = city.layers[2];
             for (var tbi = 0; tbi < tornBuildings.length; tbi++) {
                 var tb = tornBuildings[tbi];
@@ -775,7 +775,7 @@
         var hasBlizzard = powerups.hasEffect('blizzard');
         var hasAurora = powerups.hasEffect('aurora');
 
-        // ── Frost shatter AoE — frozen peds that die damage nearby ─
+        // ── Coagulant shatter AoE — frozen peds that die damage nearby ─
         var allPedsForShatter = pedManager.pedestrians;
         for (var si = allPedsForShatter.length - 1; si >= 0; si--) {
             var sp = allPedsForShatter[si];
@@ -852,7 +852,7 @@
                         if (ped.state === 'flee' && chatter.flee) {
                             lines = chatter.flee;
                         } else if (ped.state === 'walk' && chatter.walk) {
-                            // Child in rain says happy things
+                            // Child in chlorine says happy things
                             if (ped.typeName === 'child' && rig.isDosing && chatter.rainHappy) {
                                 var distToRain = Math.abs(ped.x - rig.x);
                                 if (distToRain < CFG.PED.FLEE_RANGE) {
@@ -955,7 +955,7 @@
                 if (!ped._shieldCooldown) ped._shieldCooldown = 0;
                 if (ped._shieldTimer > 0) {
                     ped._shieldTimer -= scaledDt;
-                    // Protect nearby peds from rain
+                    // Protect nearby peds from chlorine
                     for (var j = 0; j < alivePeds.length; j++) {
                         if (Math.abs(alivePeds[j].x - ped.x) < ped._shieldRadius) {
                             alivePeds[j]._shielded = true;
@@ -970,8 +970,8 @@
                     // Deploy if rig is nearby and attacking
                     var distToCloud3 = Math.abs(ped.x - rig.x);
                     var cloudAttacking = rig.isDosing || projectiles.ozoneProjectiles.length > 0 ||
-                        projectiles.lightningBolts.length > 0 || projectiles.tornadoes.length > 0 ||
-                        projectiles.frostCones.length > 0 || projectiles.fogZones.length > 0;
+                        projectiles.uvBolts.length > 0 || projectiles.backwashes.length > 0 ||
+                        projectiles.coagulantCones.length > 0 || projectiles.phZones.length > 0;
                     if (distToCloud3 < 300 && cloudAttacking) {
                         ped._shieldTimer = ped.type.shieldDuration;
                         ped._shieldRadius = ped.type.shieldRadius;
@@ -1020,15 +1020,15 @@
                 }
             }
 
-            // Anti-OperatorRig boss: clears fog and frost in its radius
+            // Anti-OperatorRig boss: clears pH shock and coagulant in its radius
             if (ped.type.clearsEffects && ped.alive) {
-                // Clear fog zones near the anti-rig
-                for (var fi = projectiles.fogZones.length - 1; fi >= 0; fi--) {
-                    if (Math.abs(projectiles.fogZones[fi].x - ped.x) < ped.type.healRadius) {
-                        projectiles.fogZones.splice(fi, 1);
+                // Clear pH shock zones near the anti-rig
+                for (var fi = projectiles.phZones.length - 1; fi >= 0; fi--) {
+                    if (Math.abs(projectiles.phZones[fi].x - ped.x) < ped.type.healRadius) {
+                        projectiles.phZones.splice(fi, 1);
                     }
                 }
-                // Unfreeze nearby peds (counter the player's frost)
+                // Unfreeze nearby peds (counter the player's coagulant)
                 for (var ui = 0; ui < alivePeds.length; ui++) {
                     if (Math.abs(alivePeds[ui].x - ped.x) < ped.type.healRadius && alivePeds[ui]._frozen) {
                         alivePeds[ui]._frozen = false;
@@ -1037,7 +1037,7 @@
                 }
             }
 
-            // Normal flee from rain (skip bosses that float)
+            // Normal flee from chlorine (skip bosses that float)
             if (!ped.type.floats) {
                 var dx = ped.x - rig.x;
                 var dy = ped.y - (rig.y + rig.height);
@@ -1063,8 +1063,8 @@
         }
 
         var attackCollected = collision.checkProjectilesVsPowerups(
-            projectiles.raindrops, projectiles.ozoneProjectiles,
-            projectiles.lightningBolts, powerups.powerups
+            projectiles.chlorineDroplets, projectiles.ozoneProjectiles,
+            projectiles.uvBolts, powerups.powerups
         );
         for (var i = 0; i < attackCollected.length; i++) {
             powerups.collect(attackCollected[i], rig, textPopups);
@@ -1118,7 +1118,7 @@
             }
         }
 
-        // Ball Lightning: find nearest building target and spawn peds
+        // Ball UV: find nearest building target and spawn peds
         var bl = powerups.ballLightning;
         if (bl) {
             // Set target to nearest building door on first frame
@@ -1198,7 +1198,7 @@
             });
             var targets = Math.min(hailAutoCount, sortedPeds.length);
             for (var ht = 0; ht < targets; ht++) {
-                projectiles.spawnHail(rig.x, rig.y + rig.height * 0.5, sortedPeds[ht].x, sortedPeds[ht].y);
+                projectiles.spawnOzone(rig.x, rig.y + rig.height * 0.5, sortedPeds[ht].x, sortedPeds[ht].y);
             }
             if (targets > 0) hailCooldown = 0.2;
         }
@@ -1225,9 +1225,9 @@
 
         // ── Apply world-level mutator effects ────────────────────
         var mutator = waves.activeMutator;
-        if (mutator && mutator.effect === 'permFog' && projectiles.fogZones.length === 0) {
-            projectiles.spawnFog(rig.x, CFG.GROUND_Y);
-            var lastFog = projectiles.fogZones[projectiles.fogZones.length - 1];
+        if (mutator && mutator.effect === 'permFog' && projectiles.phZones.length === 0) {
+            projectiles.spawnPH(rig.x, CFG.GROUND_Y);
+            var lastFog = projectiles.phZones[projectiles.phZones.length - 1];
             if (lastFog) { lastFog.radius = 600; lastFog.life = 999; lastFog.maxLife = 999; }
         }
         if (mutator && mutator.effect === 'darkness') {
@@ -1290,7 +1290,7 @@
             rig.phCharge = CFG.PH_SHOCK.CHARGE_TIME;
 
             // Award treatment points
-            progression.addStormPoints(earnedWaveScore + treatmentBonus);
+            progression.addTreatmentPoints(earnedWaveScore + treatmentBonus);
             progression.updateStats(waves.waveNumber, scoring.waveKills);
 
             // Check for attack unlocks on next wave

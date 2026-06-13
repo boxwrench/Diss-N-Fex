@@ -116,11 +116,11 @@ var SFX = (function () {
             }
         },
 
-        // ── Rain ─────────────────────────────────────────────────────────
+        // ── Chlorine ─────────────────────────────────────────────────────────
 
         /**
-         * Start filtered white-noise rain ambient loop.
-         * @returns {Function} stop - Call to stop the rain.
+         * Start filtered white-noise chlorine ambient loop.
+         * @returns {Function} stop - Call to stop the chlorine.
          */
         playChlorineAmbient: function () {
             if (!ctx) return function () {};
@@ -153,7 +153,7 @@ var SFX = (function () {
         },
 
         /**
-         * Stop rain ambient if currently playing.
+         * Stop chlorine ambient if currently playing.
          */
         stopChlorineAmbient: function () {
             if (chlorineSource) {
@@ -167,7 +167,7 @@ var SFX = (function () {
             }
         },
 
-        // ── Rain Drop ────────────────────────────────────────────────────
+        // ── Chlorine Drop ────────────────────────────────────────────────────
 
         /**
          * Very short high-pitched blip (50ms).
@@ -191,7 +191,7 @@ var SFX = (function () {
             osc.onended = function () { osc.disconnect(); gain.disconnect(); };
         },
 
-        // ── Hail ─────────────────────────────────────────────────────────
+        // ── Ozone ─────────────────────────────────────────────────────────
 
         /**
          * Short whoosh - filtered noise burst with frequency sweep (100ms).
@@ -261,10 +261,10 @@ var SFX = (function () {
             osc.onended = function () { osc.disconnect(); oscGain.disconnect(); };
         },
 
-        // ── Lightning ────────────────────────────────────────────────────
+        // ── UV ────────────────────────────────────────────────────
 
         /**
-         * Layered lightning strike: crack + bolt sweep + rumble + volume shock.
+         * Layered UV strike: crack + bolt sweep + rumble + volume shock.
          */
         playUVPulse: function () {
             if (!ctx) return;

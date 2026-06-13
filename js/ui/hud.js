@@ -146,7 +146,7 @@ var HUD = {
             ctx.fillText('[' + key + ']', keyX, y + barH / 2);
         };
 
-        // Rain (always shown)
+        // Chlorine (always shown)
         var rainFill = (rig.chlorineMeter || 0) / CFG.CHLORINE.METER_MAX;
         this.drawBar(ctx, barX, barY + gap * row, barW, barH, rainFill, '#ccff33', '#1a1a2e', 'CHLORINE');
         _drawKey(barY + gap * row, 'SPACE');
@@ -177,28 +177,28 @@ var HUD = {
             row++;
         };
 
-        // Hail
+        // Ozone
         var hailUnlocked = !prog || prog.hasAttack('ozone');
         _drawChargeBar(this, 'OZONE', 'E', (rig.ozoneMeter || 0) / CFG.OZONE.METER_MAX,
             '#00ffff', 'rgba(0,255,255,A)', hailUnlocked, 3);
 
-        // Lightning
+        // UV
         var ltngUnlocked = !prog || prog.hasAttack('uv');
-        var ltngCharge = rig._effectiveLightningCharge || CFG.UV_PULSE.CHARGE_TIME;
+        var ltngCharge = rig._effectiveUVCharge || CFG.UV_PULSE.CHARGE_TIME;
         _drawChargeBar(this, 'UV LIGHT', 'Q', (rig.uvCharge || 0) / ltngCharge,
             '#dd66ff', 'rgba(220,100,255,A)', ltngUnlocked, 6);
 
-        // Frost
+        // Coagulant
         var frstUnlocked = !prog || prog.hasAttack('coagulant');
         _drawChargeBar(this, 'COAG', 'R', (rig.coagulantCharge || 0) / CFG.COAGULANT.CHARGE_TIME,
             '#ffffff', 'rgba(255,255,255,A)', frstUnlocked, 8);
 
-        // Tornado
+        // Backwash
         var tornUnlocked = !prog || prog.hasAttack('backwash');
         _drawChargeBar(this, 'VORTX', 'F', (rig.backwashCharge || 0) / CFG.BACKWASH.CHARGE_TIME,
             '#00aaff', 'rgba(0,170,255,A)', tornUnlocked, 10);
 
-        // Fog
+        // pH Shock
         var fogUnlocked = !prog || prog.hasAttack('ph');
         _drawChargeBar(this, 'pH SHOCK', 'T', (rig.phCharge || 0) / CFG.PH_SHOCK.CHARGE_TIME,
             '#88cc44', 'rgba(136,204,68,A)', fogUnlocked, 12);

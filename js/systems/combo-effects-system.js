@@ -198,7 +198,7 @@ const ComboEffectsSystem = (function () {
                 }
             }
 
-            // Chain Reaction: chains lightning through pathogens one by one
+            // Chain Reaction: chains UV through pathogens one by one
             if (combo.type === 'chainReaction') {
                 combo._zapTimer += dt;
                 if (combo._zapTimer >= 0.15) {
@@ -244,7 +244,7 @@ const ComboEffectsSystem = (function () {
                 }
             }
 
-            // Tesla Overload: automatically strike random targets with lightning
+            // Tesla Overload: automatically strike random targets with UV
             if (combo.type === 'teslaOverload') {
                 combo._zapTimer += dt;
                 if (combo._zapTimer >= 0.3) {
@@ -252,7 +252,7 @@ const ComboEffectsSystem = (function () {
                     var tlPeds = game.pedManager.getAlive();
                     if (tlPeds.length > 0) {
                         var tlTarget = tlPeds[Math.floor(Math.random() * tlPeds.length)];
-                        game.projectiles.spawnLightning(tlTarget.x, game.rig.y + game.rig.height * 0.5);
+                        game.projectiles.spawnUV(tlTarget.x, game.rig.y + game.rig.height * 0.5);
                         tlTarget.takeDamage(CFG.UV_PULSE.DAMAGE, 'uv');
                         game.particles.lightningParticles(tlTarget.x, tlTarget.y - 12);
                         if (!tlTarget.alive) {
@@ -459,7 +459,7 @@ const ComboEffectsSystem = (function () {
 
                 ctx.restore();
 
-                // Lightning bolts emitting from hammer tip
+                // UV bolts emitting from UV lamp tip
                 if (combo.phase === 'charge') {
                     var bolts = 3;
                     ctx.strokeStyle = 'rgba(136,220,255,0.7)';
