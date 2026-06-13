@@ -1406,6 +1406,19 @@
     document.addEventListener('click', ensureAudio, { once: false });
     document.addEventListener('keydown', ensureAudio, { once: false });
 
+    // ── Auto-pause when the tab loses focus ─────────────────────
+    // Prevents the game from "running" unseen in a backgrounded tab and
+    // stops the music. Only acts during active play.
+    document.addEventListener('visibilitychange', function () {
+        // Skip on touch devices: their pause menu resumes via Escape (no key),
+        // so auto-pausing could strand a touch player.
+        if (document.hidden && gameState === 'playing' && !Input.isTouch) {
+            gameState = 'paused';
+            Music.stop();
+            if (game._epicMusic) { game._epicMusic.pause(); }
+        }
+    });
+
     // ── Debug console API ───────────────────────────────────────
     // Usage from browser DevTools: debug.combo('ragnarok')
     window.debug = {

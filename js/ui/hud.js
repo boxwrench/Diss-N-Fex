@@ -421,10 +421,11 @@ var HUD = {
             ctx.fillStyle = pu.color || '#44ff44';
             ctx.fillText(pu.name || 'AID', rx, y);
 
-            // Use remaining as proportion (assume max ~15s for display)
-            var maxDur = pu.remaining + 0.01;
-            var remaining = pu.remaining / Math.max(maxDur, 1);
-            this.drawBar(ctx, rx - 100, y + 14, 100, 6, Math.min(1, pu.remaining / 15), pu.color || '#44ff44', '#1a1a2e');
+            // Bar fill = remaining / original duration (fallback to remaining
+            // so effects without a stored duration still show a sane bar).
+            var maxDur = pu.duration || pu.remaining || 1;
+            var fill = Math.max(0, Math.min(1, pu.remaining / maxDur));
+            this.drawBar(ctx, rx - 100, y + 14, 100, 6, fill, pu.color || '#44ff44', '#1a1a2e');
 
             var secs = Math.ceil(pu.remaining || 0);
             ctx.font = '9px "Courier New", monospace';

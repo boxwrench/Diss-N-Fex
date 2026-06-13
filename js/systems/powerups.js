@@ -170,6 +170,7 @@ class PowerUpSystem {
             name:      type.name,
             effect:    type.effect,
             remaining: type.duration,
+            duration:  type.duration,   // original, for HUD bar scaling
             color:     type.color,
         });
 

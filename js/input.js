@@ -131,12 +131,15 @@ const Input = {
         return { x: dx, y: dy };
     },
 
+    // Action keys auto-fire while held; per-attack cooldowns / charge gates
+    // in main.js prevent spamming, so this just makes the keyboard behave
+    // consistently with the mouse (which already auto-fires).
     wantsChlorine()  { return this.isDown('Space') || this.touch.chlorine; },
-    wantsOzone()     { return this.justPressed('KeyE') || this.mouse.down || this.touch.ozone; },
-    wantsUV()        { return this.justPressed('KeyQ') || this.mouse.right || this.touch.uv; },
-    wantsBackwash()  { return this.justPressed('KeyF') || this.touch.backwash; },
-    wantsCoagulant() { return this.justPressed('KeyR') || this.touch.coagulant; },
-    wantsPH()        { return this.justPressed('KeyT') || this.touch.ph; },
+    wantsOzone()     { return this.isDown('KeyE') || this.mouse.down || this.touch.ozone; },
+    wantsUV()        { return this.isDown('KeyQ') || this.mouse.right || this.touch.uv; },
+    wantsBackwash()  { return this.isDown('KeyF') || this.touch.backwash; },
+    wantsCoagulant() { return this.isDown('KeyR') || this.touch.coagulant; },
+    wantsPH()        { return this.isDown('KeyT') || this.touch.ph; },
 
     endFrame() {
         this._justPressed = {};
