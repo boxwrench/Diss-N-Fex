@@ -103,6 +103,7 @@ const City = (function () {
         grad.addColorStop(1, skyBottom);
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, cW, CFG.GROUND_Y);
+        this._drawGoldenGate(ctx, camera, brightness);
         this._drawTreatmentTanks(ctx, camera, brightness);
         this._drawTreatmentFacts(ctx, camera, brightness);
 
@@ -163,6 +164,109 @@ const City = (function () {
         ctx.fillRect(0, CFG.GROUND_Y, cW, cH - CFG.GROUND_Y);
 
         this._drawTreatmentChannel(ctx, camera, brightness);
+    };
+
+    // ── San Francisco skyline + Golden Gate Bridge (far horizon) ──
+    // A subtle, muted distant silhouette behind the treatment plant. Slow
+    // parallax, day/night aware, drawn behind every building layer.
+    City.prototype._drawGoldenGate = function (ctx, camera, brightness) {
+        var cW = CFG.WIDTH;
+        var horizon = CFG.GROUND_Y - 250;     // sit high so plant/buildings don't block it
+        var par = camera.x * 0.05;            // very slow parallax (far away)
+        var b = 0.55 + brightness * 0.45;     // overall visibility w/ day/night
+
+        ctx.save();
+
+        // Faint hills behind the city (Marin headlands feel)
+        ctx.fillStyle = 'rgba(34, 58, 78, ' + (0.42 * b) + ')';
+        ctx.beginPath();
+        ctx.moveTo(0, horizon + 18);
+        for (var hx = 0; hx <= cW; hx += 40) {
+            var hy = horizon + 6 + Math.sin((hx + par * 0.5) * 0.004) * 16
+                     + Math.sin((hx + par) * 0.011) * 8;
+            ctx.lineTo(hx, hy);
+        }
+        ctx.lineTo(cW, horizon + 40);
+        ctx.lineTo(0, horizon + 40);
+        ctx.closePath();
+        ctx.fill();
+
+        // SF skyline silhouette (simple staggered towers, incl. a pyramid)
+        ctx.fillStyle = 'rgba(28, 50, 72, ' + (0.55 * b) + ')';
+        var baseY = horizon + 30;
+        var skyStart = cW * 0.30;
+        var towers = [
+            [0, 26, 34], [34, 20, 22], [60, 24, 46], [90, 18, 28],
+            [114, 30, 38], [150, 16, 24], [172, 22, 52], [200, 20, 30],
+            [228, 28, 40], [262, 18, 26]
+        ];
+        for (var t = 0; t < towers.length; t++) {
+            var tx = skyStart - par * 0.6 + towers[t][0];
+            var tw = towers[t][1], th = towers[t][2];
+            if (tx + tw < 0 || tx > cW) continue;
+            ctx.fillRect(tx, baseY - th, tw, th);
+        }
+        // Transamerica-style pyramid accent
+        var px = skyStart - par * 0.6 + 172 + 11;
+        ctx.beginPath();
+        ctx.moveTo(px, baseY - 52 - 26);
+        ctx.lineTo(px - 11, baseY - 52);
+        ctx.lineTo(px + 11, baseY - 52);
+        ctx.closePath();
+        ctx.fill();
+
+        // ── Golden Gate Bridge (international orange, left of the skyline) ──
+        var bx = cW * 0.05 - par * 0.7;       // bridge anchor x
+        var deckY = horizon + 22;             // road deck height
+        var towerTop = horizon - 40;          // tower height
+        var span = 230;                       // distance between towers
+        var orange = 'rgba(214, 86, 42, ' + (0.78 * b) + ')';
+        var orangeLt = 'rgba(232, 104, 58, ' + (0.78 * b) + ')';
+
+        // Main suspension cables (catenary curves) tower-to-tower + to anchors
+        ctx.strokeStyle = orange;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(bx - 70, deckY);
+        ctx.quadraticCurveTo(bx, deckY - 30, bx, towerTop + 6);
+        ctx.moveTo(bx, towerTop + 6);
+        ctx.quadraticCurveTo(bx + span / 2, deckY + 26, bx + span, towerTop + 6);
+        ctx.quadraticCurveTo(bx + span, deckY - 30, bx + span + 70, deckY);
+        ctx.stroke();
+
+        // Vertical suspender ropes
+        ctx.lineWidth = 0.6;
+        for (var sx = bx + 8; sx < bx + span; sx += 16) {
+            var f = (sx - bx) / span;
+            var cableY = deckY + 26 - Math.sin(f * Math.PI) * 56;
+            ctx.beginPath();
+            ctx.moveTo(sx, cableY);
+            ctx.lineTo(sx, deckY);
+            ctx.stroke();
+        }
+
+        // Road deck
+        ctx.strokeStyle = orangeLt;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(bx - 70, deckY);
+        ctx.lineTo(bx + span + 70, deckY);
+        ctx.stroke();
+
+        // Two towers
+        ctx.fillStyle = orange;
+        ctx.fillRect(bx - 3, towerTop, 6, deckY - towerTop + 6);
+        ctx.fillRect(bx + span - 3, towerTop, 6, deckY - towerTop + 6);
+        // Tower cross-braces
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(bx - 3, towerTop + 14); ctx.lineTo(bx + 3, towerTop + 14);
+        ctx.moveTo(bx - 3, towerTop + 30); ctx.lineTo(bx + 3, towerTop + 30);
+        ctx.moveTo(bx + span - 3, towerTop + 14); ctx.lineTo(bx + span + 3, towerTop + 14);
+        ctx.moveTo(bx + span - 3, towerTop + 30); ctx.lineTo(bx + span + 3, towerTop + 30);
+        ctx.stroke();
+
+        ctx.restore();
     };
 
     City.prototype._drawTreatmentTanks = function (ctx, camera, brightness) {
