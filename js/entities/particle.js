@@ -51,7 +51,10 @@ class ParticleSystem {
             p.y  += p.vy * dt;
             p.life -= dt;
             if (p.life <= 0) {
-                this.particles.splice(i, 1);
+                // Swap-and-pop: O(1) removal (particle draw order is irrelevant).
+                var last = this.particles.length - 1;
+                this.particles[i] = this.particles[last];
+                this.particles.pop();
             }
         }
     }

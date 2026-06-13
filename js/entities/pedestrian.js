@@ -612,6 +612,7 @@ class Pedestrian {
 class PedestrianManager {
     constructor() {
         this.pedestrians = [];
+        this._drawBuffer = [];   // reused each frame for painter-order sort
     }
 
     spawn(typeName, x) {
@@ -656,12 +657,17 @@ class PedestrianManager {
     }
 
     draw(ctx) {
-        // Painter's order: sort by y so peds closer to bottom draw on top
-        var sorted = this.getAlive().slice().sort(function(a, b) {
-            return a.y - b.y;
-        });
-        for (var i = 0; i < sorted.length; i++) {
-            sorted[i].draw(ctx);
+        // Painter's order: sort by y so peds closer to bottom draw on top.
+        // Reuse a persistent buffer + hoisted comparator to avoid per-frame
+        // array + closure allocations.
+        var buf = this._drawBuffer;
+        buf.length = 0;
+        for (var k = 0; k < this.pedestrians.length; k++) {
+            if (this.pedestrians[k].alive) buf.push(this.pedestrians[k]);
+        }
+        buf.sort(PedestrianManager._byY);
+        for (var i = 0; i < buf.length; i++) {
+            buf[i].draw(ctx);
         }
         // Also draw dead/zapped ones underneath
         for (var j = 0; j < this.pedestrians.length; j++) {
@@ -704,3 +710,6 @@ class PedestrianManager {
         this.pedestrians.length = 0;
     }
 }
+
+// Hoisted comparator for painter-order draw sort (avoids per-frame closures).
+PedestrianManager._byY = function (a, b) { return a.y - b.y; };

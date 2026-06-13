@@ -197,7 +197,7 @@ class ProjectileManager {
             var r = this.chlorineDroplets[i];
             r.y += r.vy * dt;
             if (r.y > CFG.GROUND_Y + 20) {
-                this.chlorineDroplets.splice(i, 1);
+                var _l = this.chlorineDroplets.length - 1; this.chlorineDroplets[i] = this.chlorineDroplets[_l]; this.chlorineDroplets.pop();
             }
         }
 
@@ -208,7 +208,7 @@ class ProjectileManager {
             h.x  += h.vx * dt;
             h.y  += h.vy * dt;
             if (h.y > CFG.GROUND_Y + 20 || h.y < -50) {
-                this.ozoneProjectiles.splice(i, 1);
+                var _l = this.ozoneProjectiles.length - 1; this.ozoneProjectiles[i] = this.ozoneProjectiles[_l]; this.ozoneProjectiles.pop();
             }
         }
 
@@ -217,7 +217,7 @@ class ProjectileManager {
             var bolt = this.uvBolts[i];
             bolt.life -= dt;
             if (bolt.life <= 0) {
-                this.uvBolts.splice(i, 1);
+                var _l = this.uvBolts.length - 1; this.uvBolts[i] = this.uvBolts[_l]; this.uvBolts.pop();
             }
         }
 
@@ -229,7 +229,7 @@ class ProjectileManager {
             t.rotation += dt * 12;
             t.hitTimer -= dt;
             if (t.life <= 0 || t.x < -100 || t.x > CFG.CITY.WORLD_WIDTH + 100) {
-                this.backwashes.splice(i, 1);
+                var _l = this.backwashes.length - 1; this.backwashes[i] = this.backwashes[_l]; this.backwashes.pop();
             }
         }
 
@@ -247,19 +247,19 @@ class ProjectileManager {
                 if (eb.trail[ti].life <= 0) eb.trail.splice(ti, 1);
             }
             if (eb.life <= 0 || eb.x < -50 || eb.x > CFG.CITY.WORLD_WIDTH + 50 || eb.y < -50) {
-                this.enemyBullets.splice(i, 1);
+                var _l = this.enemyBullets.length - 1; this.enemyBullets[i] = this.enemyBullets[_l]; this.enemyBullets.pop();
             }
         }
 
         // Coagulant cones
         for (i = this.coagulantCones.length - 1; i >= 0; i--) {
             this.coagulantCones[i].life -= dt;
-            if (this.coagulantCones[i].life <= 0) this.coagulantCones.splice(i, 1);
+            if (this.coagulantCones[i].life <= 0) { this.coagulantCones[i] = this.coagulantCones[this.coagulantCones.length-1]; this.coagulantCones.pop(); }
         }
         // pH Shock zones
         for (i = this.phZones.length - 1; i >= 0; i--) {
             this.phZones[i].life -= dt;
-            if (this.phZones[i].life <= 0) this.phZones.splice(i, 1);
+            if (this.phZones[i].life <= 0) { this.phZones[i] = this.phZones[this.phZones.length-1]; this.phZones.pop(); }
         }
 
         // Screen flash decay
