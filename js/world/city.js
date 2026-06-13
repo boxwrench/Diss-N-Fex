@@ -277,7 +277,7 @@ const City = (function () {
         for (var i = -1; i < 8; i++) {
             var x = i * 240 - (scrollX % 240) + 90;
             var w = 135;
-            var h = 44 + (i % 3) * 8;
+            var h = 22 + (i % 3) * 4;
 
             ctx.fillStyle = 'rgba(8, 24, 34, ' + (0.42 + brightness * 0.12) + ')';
             ctx.beginPath();
@@ -314,7 +314,7 @@ const City = (function () {
         var alpha = 0.22 + brightness * 0.18;
 
         ctx.save();
-        ctx.font = 'bold 12px "Courier New", monospace';
+        ctx.font = 'bold 20px "Courier New", monospace';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = 'rgba(190, 245, 245, ' + alpha + ')';
@@ -324,9 +324,9 @@ const City = (function () {
         for (var row = 0; row < 3; row++) {
             var factIndex = Math.floor(time / 520 + row * 3) % TREATMENT_FACTS.length;
             var fact = TREATMENT_FACTS[factIndex];
-            var y = 92 + row * 54;
+            var y = 70 + row * 80;
             var span = cW + 760;
-            var x = cW - ((time * (0.42 + row * 0.08) + camera.x * 0.035 + row * 260) % span);
+            var x = cW - ((time * (0.22 + row * 0.05) + camera.x * 0.02 + row * 320) % span);
 
             ctx.strokeText(fact, x, y);
             ctx.fillText(fact, x, y);

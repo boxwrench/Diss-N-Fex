@@ -82,6 +82,7 @@ class TreatmentObjectiveSystem {
             cycle: cycle || 1,
             elapsed: 0,
             progress: 0,
+            live: 0,
             alerts: [],
             metrics: this._initialMetrics(def.id),
         };
@@ -136,6 +137,14 @@ class TreatmentObjectiveSystem {
         } else if (id === 'contaminationSpike') {
             this._updateContamination(c, game, dt, killDelta);
         }
+
+        // c.live tracks "current operating quality": it rises toward the raw
+        // progress but steadily decays, so the Chief Operator buff only lasts
+        // while you keep actively maintaining the objective.
+        var decay = 0.06 * (dt || 0);            // ~6%/s natural bleed-down
+        var rise = (c.progress - c.live);
+        c.live += rise * Math.min(1, 2.5 * (dt || 0));   // ease toward progress
+        c.live = _treatClamp(c.live - decay, 0, 1);
 
         c.alerts = this._buildAlerts(c, game);
     }
@@ -272,7 +281,7 @@ class TreatmentObjectiveSystem {
     // Hysteresis so it doesn't flicker: engages at 85%, drops below 70%.
     getActiveBuff() {
         if (!this.current) { this._chiefActive = false; return null; }
-        var p = this.current.progress || 0;
+        var p = this.current.live || 0;
         if (this._chiefActive) {
             if (p < 0.70) { this._chiefActive = false; this._chiefAnnounced = false; }
         } else {

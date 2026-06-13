@@ -1178,7 +1178,7 @@ class OperatorRig {
 
     useRain(dt) {
         this.chlorineMeter = Math.max(0, this.chlorineMeter - CFG.CHLORINE.DRAIN_RATE * dt);
-        this._chlorineRefillDelay = 0.35;
+        this._chlorineRefillDelay = 0;
         this.isDosing = true;
     }
 

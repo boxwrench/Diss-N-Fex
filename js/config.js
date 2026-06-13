@@ -4,8 +4,8 @@ const CFG = {
     WIDTH: 1280,
     HEIGHT: 720,
     GROUND_Y: 620,
-    SKY_TOP: '#030c16',
-    SKY_BOTTOM: '#0e2b45',
+    SKY_TOP: '#1a4a7a',
+    SKY_BOTTOM: '#5a9fd4',
 
     // Operator rig (player)
     RIG: {
@@ -25,8 +25,8 @@ const CFG = {
     // Chlorine contact spray
     CHLORINE: {
         METER_MAX: 100,
-        DRAIN_RATE: 45,
-        REFILL_RATE: 22,
+        DRAIN_RATE: 40,
+        REFILL_RATE: 40,
         DPS: 5,
         DROP_SPEED: 600,
         CONE_WIDTH: 80,

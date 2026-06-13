@@ -76,6 +76,7 @@
     var multiKillTimer = 0;
     var multiKillType = '';   // last attack type that killed
     var autoSaveTimer = 0;
+    var damageFlashTimer = 0;  // red screen-edge flash when the rig is hit
 
     var MULTI_KILL_NAMES = [
         null,           // 0
@@ -267,6 +268,7 @@
 
         // Update notification system
         NotificationSystem.update(dt);
+        if (damageFlashTimer > 0) damageFlashTimer -= dt;
         if (typeof Tutorial !== 'undefined') Tutorial.update(dt, game);
 
         // Menu handling
@@ -650,6 +652,7 @@
             var bdy = eb.y - rig.y;
             if (Math.abs(bdx) < rig.width * 0.5 && Math.abs(bdy) < rig.height * 0.5) {
                 rig.takeDamage(eb.damage);
+                damageFlashTimer = 0.45;
                 particles.hitEffect(rig.x + bdx * 0.5, rig.y + bdy * 0.5);
                 textPopups.add(rig.x, rig.y - 20, '-' + eb.damage + ' HP', {
                     color: '#ff4444', size: 14, life: 1.2, bold: true, vy: -30,
@@ -1378,6 +1381,21 @@
             var windDir = windSpeed > 0 ? '>>>' : '<<<';
             ctx.fillText('WIND ' + windDir, CFG.WIDTH / 2, CFG.HEIGHT - 10);
             ctx.globalAlpha = 1;
+            ctx.restore();
+        }
+
+        // Damage flash: red vignette pulse when the operator takes a hit.
+        if (damageFlashTimer > 0) {
+            ctx.save();
+            var dfA = Math.min(0.55, damageFlashTimer / 0.45 * 0.55);
+            var dfGrad = ctx.createRadialGradient(
+                CFG.WIDTH / 2, CFG.HEIGHT / 2, CFG.HEIGHT * 0.35,
+                CFG.WIDTH / 2, CFG.HEIGHT / 2, CFG.HEIGHT * 0.85
+            );
+            dfGrad.addColorStop(0, 'rgba(255,0,0,0)');
+            dfGrad.addColorStop(1, 'rgba(220,20,20,' + dfA + ')');
+            ctx.fillStyle = dfGrad;
+            ctx.fillRect(0, 0, CFG.WIDTH, CFG.HEIGHT);
             ctx.restore();
         }
     }
