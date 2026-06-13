@@ -202,6 +202,7 @@
 
         waves.startWave(pedManager);
         treatmentObjectives.startCycle(waves.waveNumber);
+        if (typeof Tutorial !== 'undefined') Tutorial.reset();
         Music.start();
         track('game_start', { basin: SaveSystem.activeSlot });
     }
@@ -266,6 +267,7 @@
 
         // Update notification system
         NotificationSystem.update(dt);
+        if (typeof Tutorial !== 'undefined') Tutorial.update(dt, game);
 
         // Menu handling
         menu.state = gameState;
@@ -1220,6 +1222,7 @@
             // HUD (screen space)
             HUD.draw(ctx, game);
             if (typeof TouchControls !== 'undefined') TouchControls.draw(ctx, game);
+            if (typeof Tutorial !== 'undefined') Tutorial.draw(ctx, game);
 
             // Off-screen indicators for bosses and bounties
             var indicatorPeds = pedManager.getAlive();

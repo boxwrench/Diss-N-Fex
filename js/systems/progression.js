@@ -3,12 +3,12 @@
 // Depends on global CFG.
 
 var ATTACK_UNLOCKS = {
-    chlorine:      { wave: 1,  announcement: 'Operator online. Chlorine feed pump primed.' },
-    ozone:      { wave: 3,  announcement: 'Ozone diffuser ready.' },
-    uv: { wave: 6,  announcement: 'UV lamp bank warmed up.' },
-    backwash:   { wave: 10, announcement: 'Filter backwash vortex initialized.' },
-    coagulant:     { wave: 8,  announcement: 'Coagulant feed line primed.' },
-    ph:       { wave: 12, announcement: 'pH buffer shock release unlocked.' },
+    chlorine:      { wave: 1,  announcement: 'Chlorine feed primed — hold SPACE to spray' },
+    ozone:      { wave: 3,  announcement: 'Ozone diffuser ready — press E (or click)' },
+    uv: { wave: 6,  announcement: 'UV lamp bank ready — press Q (or right-click)' },
+    backwash:   { wave: 10, announcement: 'Filter backwash ready — press F' },
+    coagulant:     { wave: 8,  announcement: 'Coagulant feed primed — press R' },
+    ph:       { wave: 12, announcement: 'pH shock ready — press T' },
 };
 
 var UPGRADES = {
