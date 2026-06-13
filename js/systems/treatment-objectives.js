@@ -63,6 +63,8 @@ function _getTreatmentObjectiveDef(cycle) {
 class TreatmentObjectiveSystem {
     constructor() {
         this.reset();
+        this._chiefActive = false;   // "Chief Operator" buff currently held
+        this._chiefAnnounced = false;
     }
 
     reset() {
@@ -87,6 +89,8 @@ class TreatmentObjectiveSystem {
         this._lastKills = 0;
         this._bossSeen = false;
         this._bossDefeated = false;
+        this._chiefActive = false;
+        this._chiefAnnounced = false;
     }
 
     _initialMetrics(id) {
@@ -261,6 +265,28 @@ class TreatmentObjectiveSystem {
             progressPct: _treatPercent(c.progress),
             metricLine: this._metricLine(c),
             alerts: c.alerts || [],
+        };
+    }
+
+    // Live "Chief Operator" buff: keep the objective topped up to earn it.
+    // Hysteresis so it doesn't flicker: engages at 85%, drops below 70%.
+    getActiveBuff() {
+        if (!this.current) { this._chiefActive = false; return null; }
+        var p = this.current.progress || 0;
+        if (this._chiefActive) {
+            if (p < 0.70) { this._chiefActive = false; this._chiefAnnounced = false; }
+        } else {
+            if (p >= 0.85) { this._chiefActive = true; }
+        }
+        if (!this._chiefActive) return null;
+        var justEarned = !this._chiefAnnounced;
+        this._chiefAnnounced = true;
+        return {
+            id: 'chiefOperator',
+            title: 'CHIEF OPERATOR',
+            scoreMult: 1.5,
+            rechargeMult: 1.25,
+            justEarned: justEarned,
         };
     }
 

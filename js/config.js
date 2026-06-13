@@ -25,8 +25,8 @@ const CFG = {
     // Chlorine contact spray
     CHLORINE: {
         METER_MAX: 100,
-        DRAIN_RATE: 25,
-        REFILL_RATE: 15,
+        DRAIN_RATE: 45,
+        REFILL_RATE: 10,
         DPS: 5,
         DROP_SPEED: 600,
         CONE_WIDTH: 80,
@@ -37,8 +37,8 @@ const CFG = {
     // Ozone diffuser
     OZONE: {
         METER_MAX: 100,
-        COST: 12,
-        REFILL_RATE: 8,
+        COST: 20,
+        REFILL_RATE: 6,
         DAMAGE: 3,
         SPEED: 350,
         GRAVITY: 500,

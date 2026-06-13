@@ -97,6 +97,15 @@ var HUD = {
         this._shadowText(ctx, alert, x + 12, y + 56, '#aab7bb',
             '9px "Courier New", monospace', 'left');
 
+        // "Chief Operator" badge while the objective is held high.
+        if (game.rig && game.rig._chiefOperator) {
+            var pulse = 0.6 + 0.4 * Math.sin(performance.now() * 0.006);
+            ctx.globalAlpha = pulse;
+            this._shadowText(ctx, '\u2605 CHIEF OPERATOR', x + w - 12, y + 56, '#19c3ff',
+                'bold 10px "Courier New", monospace', 'right');
+            ctx.globalAlpha = 1;
+        }
+
         ctx.restore();
     },
 

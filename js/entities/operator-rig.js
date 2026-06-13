@@ -32,6 +32,7 @@ class OperatorRig {
         // Meters
         this.chlorineMeter = CFG.CHLORINE.METER_MAX;
         this.ozoneMeter = CFG.OZONE.METER_MAX;
+        this._chlorineRefillDelay = 0; // brief pause before chlorine refills
         this.uvCharge = CFG.UV_PULSE.CHARGE_TIME;
         this.backwashCharge = CFG.BACKWASH.CHARGE_TIME;
         this.coagulantCharge = CFG.COAGULANT.CHARGE_TIME;
@@ -80,7 +81,10 @@ class OperatorRig {
 
         // ── Meter refill ────────────────────────────────────────
         var rechargeMult = this._effectiveRecharge || 1;
-        if (!this.isDosing) {
+        // Chlorine only refills after a short delay since you last sprayed,
+        // so tap-release no longer tops the meter back up instantly.
+        if (this._chlorineRefillDelay > 0) this._chlorineRefillDelay -= dt;
+        if (!this.isDosing && this._chlorineRefillDelay <= 0) {
             this.chlorineMeter = Math.min(CFG.CHLORINE.METER_MAX,
                 this.chlorineMeter + CFG.CHLORINE.REFILL_RATE * rechargeMult * dt);
         }
@@ -845,8 +849,8 @@ class OperatorRig {
             ctx.ellipse(cx + eyeSpacing, eyeY, eyeRx * 1.1, eyeRy * 0.45, 0, 0, Math.PI * 2);
             ctx.fill();
 
-            // Pupils: tiny, red-tinted
-            ctx.fillStyle = '#ff1a1a';
+            // Pupils: glowing water-blue (powered-up, clean — not sinister)
+            ctx.fillStyle = '#19c3ff';
             var tinyPupil = 1.5;
             ctx.beginPath();
             ctx.arc(cx - eyeSpacing + pShiftX, eyeY + pShiftY * 0.3, tinyPupil, 0, Math.PI * 2);
@@ -1174,6 +1178,7 @@ class OperatorRig {
 
     useRain(dt) {
         this.chlorineMeter = Math.max(0, this.chlorineMeter - CFG.CHLORINE.DRAIN_RATE * dt);
+        this._chlorineRefillDelay = 0.6;
         this.isDosing = true;
     }
 

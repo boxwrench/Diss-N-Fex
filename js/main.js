@@ -414,6 +414,14 @@
         var timeScale = powerups.getTimeScale();
         var scaledDt = dt * timeScale;
         var damageMult = powerups.getDamageMultiplier();
+        // "Chief Operator" buff: scoring bonus while the cycle objective is held high.
+        var chiefBuff = treatmentObjectives.getActiveBuff ? treatmentObjectives.getActiveBuff() : null;
+        if (chiefBuff) {
+            damageMult *= chiefBuff.scoreMult;
+            rig._chiefOperator = true;
+        } else {
+            rig._chiefOperator = false;
+        }
         // Kaiju mode: 4x damage on top of rage
         var activeCombo = powerups.getSecretCombo();
         if (activeCombo && activeCombo.type === 'kaiju') {
@@ -982,6 +990,16 @@
         scaledDt = scaledDtObj.value;
 
         treatmentObjectives.update(dt, game);
+
+        // Announce the Chief Operator buff the moment it is earned.
+        if (chiefBuff && chiefBuff.justEarned) {
+            NotificationSystem.showAnnouncement('\u2605 CHIEF OPERATOR \u2014 bonus active!');
+            textPopups.add(rig.x, rig.y - 40, 'CHIEF OPERATOR', {
+                color: '#19c3ff', size: 22, life: 2.5, bold: true, vy: -45,
+            });
+            rig.setExpression('happy', 2.0);
+            if (typeof SFX !== 'undefined' && SFX.playComboChime) SFX.playComboChime(4);
+        }
 
         // ── Special Event announcements ──────────────────────────
         if (waves._eventAnnouncement) {
